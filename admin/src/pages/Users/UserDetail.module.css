@@ -1,0 +1,48 @@
+.back {
+  background: none;
+  border: none;
+  color: var(--gray);
+  font-size: .84rem;
+  cursor: pointer;
+  padding: 0 0 1.5rem;
+  display: block;
+  transition: color .2s;
+}
+.back:hover { color: var(--cream); }
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.avatar {
+  width: 52px; height: 52px;
+  background: var(--red);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; font-weight: 700;
+  flex-shrink: 0; color: var(--cream);
+}
+
+.headerInfo { flex: 1; min-width: 0; }
+.name  { font-size: 1.25rem; font-weight: 700; margin-bottom: .2rem; }
+.email { font-size: .85rem; color: var(--gray); }
+.phone { font-size: .82rem; color: var(--gray); margin-top: .15rem; }
+
+.headerMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .6rem;
+  flex-shrink: 0;
+}
+.since { font-size: .76rem; color: var(--gray); }
+
+.section { margin-bottom: 2rem; }

@@ -1,0 +1,75 @@
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 640px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.bg { position: absolute; inset: 0; }
+.bg img { width: 100%; height: 100%; object-fit: cover; }
+.overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(10,10,13,.8) 0%, rgba(10,10,13,.7) 50%, #0A0A0D 100%);
+}
+.watermark {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.watermark img {
+  width: 600px; height: 600px;
+  object-fit: contain; opacity: .05;
+  animation: spin 20s linear infinite;
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.content {
+  position: relative; z-index: 2;
+  text-align: center; padding: 0 1.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: 1rem;
+}
+.animItem {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+.animItem.visible { opacity: 1; transform: translateY(0); }
+
+.logoImg { height: 120px; width: auto; }
+.sub {
+  font-size: 1.4rem; font-weight: 300;
+  color: var(--gray); letter-spacing: .1em;
+}
+.desc {
+  font-size: 1.1rem; font-weight: 300;
+  color: var(--gray); max-width: 600px; line-height: 1.7;
+}
+.cta {
+  margin-top: .5rem;
+  background: var(--red); color: var(--cream);
+  border: none; padding: 1rem 2.5rem;
+  font-size: 1rem; font-weight: 500; letter-spacing: .04em;
+  transition: all .3s; border-radius: 2px;
+}
+.cta:hover { background: var(--red-light); transform: scale(1.05); }
+
+.scrollBtn {
+  position: absolute; bottom: 2rem; left: 50%;
+  transform: translateX(-50%);
+  background: none; border: none; color: var(--cream);
+  animation: bounce 2s ease-in-out infinite;
+  transition: color .3s;
+}
+.scrollBtn:hover { color: var(--red); }
+@keyframes bounce {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-10px); }
+}
+
+@media (max-width: 768px) {
+  .logoImg { height: 80px; }
+  .sub  { font-size: 1.1rem; }
+  .desc { font-size: .95rem; }
+  .watermark img { width: 300px; height: 300px; }
+}

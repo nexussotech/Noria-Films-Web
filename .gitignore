@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.angular/
+.vite/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS / macOS
+.DS_Store
+__MACOSX/
+Thumbs.db
+._*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Testing
+coverage/
+
+# TypeScript
+*.tsbuildinfo

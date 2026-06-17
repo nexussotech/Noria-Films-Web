@@ -1,0 +1,88 @@
+.contact { padding: 7rem 0; background: var(--bg-secondary); }
+
+.header { text-align: center; margin-bottom: 4rem; }
+.contactLogo { height: 50px; margin: 0 auto 1.5rem; }
+.header h2 { font-size: clamp(2rem,4vw,3rem); margin-bottom: 1rem; }
+.divider { width: 96px; height: 4px; background: var(--red); margin: 0 auto 1.5rem; }
+.subtitle { color: var(--gray); max-width: 500px; margin: 0 auto; line-height: 1.7; }
+
+.grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; align-items: start; }
+
+.info h3 { font-size: 1.2rem; margin-bottom: 1.5rem; }
+.infoList { display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 2rem; }
+.infoItem { display: flex; gap: 1rem; align-items: flex-start; }
+.infoIcon {
+  width: 40px; height: 38px;
+  background: rgba(167,52,54,.15);
+  border: 1px solid rgba(167,52,54,.25);
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: .6rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  color: var(--red-light);
+  font-family: var(--font-body);
+}
+.infoLabel { font-size: .75rem; color: var(--gray); letter-spacing: .06em; margin-bottom: .2rem; }
+.infoItem a,
+.infoItem p { font-size: .9rem; transition: color .3s; }
+.infoItem a:hover { color: var(--red); }
+.contactImg { width: 100%; border-radius: 2px; margin-top: 1.5rem; filter: brightness(.85); }
+
+/* Form */
+.form { display: flex; flex-direction: column; gap: 1.2rem; }
+.formGroup { display: flex; flex-direction: column; gap: .4rem; }
+.formGroup label { font-size: .82rem; color: var(--gray); letter-spacing: .04em; }
+.formGroup input,
+.formGroup textarea {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255,255,255,.1);
+  color: var(--cream);
+  padding: .75rem 1rem;
+  font-size: .9rem;
+  font-family: var(--font-body);
+  border-radius: 2px;
+  transition: border-color .3s;
+  outline: none;
+  resize: vertical;
+}
+.formGroup input:focus,
+.formGroup textarea:focus { border-color: var(--red); }
+.formGroup input::placeholder,
+.formGroup textarea::placeholder { color: rgba(184,184,194,.4); }
+
+.submitBtn {
+  background: var(--red);
+  color: var(--cream);
+  border: none;
+  padding: .9rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 2px;
+  transition: background .3s;
+  margin-top: .4rem;
+}
+.submitBtn:hover:not(:disabled) { background: var(--red-light); }
+.submitBtn:disabled { opacity: .6; cursor: not-allowed; }
+
+.success {
+  background: rgba(50,160,100,.15);
+  border: 1px solid rgba(50,160,100,.4);
+  color: #5dc98a;
+  padding: .9rem 1.2rem;
+  border-radius: 2px;
+  font-size: .9rem;
+}
+.error {
+  background: rgba(167,52,54,.15);
+  border: 1px solid rgba(167,52,54,.4);
+  color: var(--red-light);
+  padding: .9rem 1.2rem;
+  border-radius: 2px;
+  font-size: .9rem;
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+}

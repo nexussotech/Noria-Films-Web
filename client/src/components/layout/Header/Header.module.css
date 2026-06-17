@@ -1,0 +1,176 @@
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10,10,13,.96);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  transition: border-color .3s, box-shadow .3s;
+}
+.header.scrolled {
+  border-bottom-color: rgba(167,52,54,.3);
+  box-shadow: 0 2px 20px rgba(0,0,0,.5);
+}
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.logo img {
+  height: 52px;
+  width: auto;
+  transition: transform .3s;
+}
+.logo:hover img { transform: scale(1.05); }
+
+.navDesktop {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+.navDesktop button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: .88rem;
+  font-weight: 500;
+  letter-spacing: .04em;
+  transition: color .3s;
+  cursor: pointer;
+}
+.navDesktop button:hover { color: var(--red); }
+
+.cta {
+  background: var(--red);
+  color: var(--cream) !important;
+  padding: .45rem 1.2rem;
+  border-radius: 2px;
+  transition: background .3s !important;
+}
+.cta:hover { background: var(--red-light) !important; color: var(--cream) !important; }
+
+/* ── User dropdown ── */
+.userMenu { position: relative; }
+.userBtn {
+  display: flex; align-items: center; gap: .5rem;
+  background: rgba(167,52,54,.15);
+  border: 1px solid rgba(167,52,54,.35);
+  color: var(--cream);
+  padding: .4rem .9rem;
+  border-radius: 2px;
+  font-family: var(--font-body);
+  font-size: .85rem;
+  cursor: pointer;
+  transition: background .3s;
+}
+.userBtn:hover { background: rgba(167,52,54,.3); }
+.userInitial {
+  width: 24px; height: 24px;
+  background: var(--red);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 700;
+}
+.userName { max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chevron { font-size: .6rem; opacity: .7; }
+
+.dropdown {
+  position: absolute; top: calc(100% + 8px); right: 0;
+  min-width: 180px;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  z-index: 100;
+}
+.dropdown button {
+  display: block; width: 100%;
+  background: none; border: none;
+  padding: .75rem 1rem;
+  text-align: left;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: .88rem;
+  cursor: pointer;
+  transition: background .2s;
+}
+.dropdown button:hover { background: rgba(255,255,255,.06); }
+.dropdown .divider { height: 1px; background: rgba(255,255,255,.08); margin: .25rem 0; }
+.dropdown .logoutBtn { color: var(--red-light); }
+.dropdown .logoutBtn:hover { background: rgba(167,52,54,.1); }
+
+/* NavLink dentro del dropdown */
+.navLink {
+  display: block;
+  padding: .75rem 1rem;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: .88rem;
+  text-decoration: none;
+  transition: background .2s;
+}
+.navLink:hover { background: rgba(255,255,255,.06); }
+.navLinkActive { color: var(--red-light); background: rgba(167,52,54,.08); }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+}
+.hamburger span {
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--cream);
+  border-radius: 2px;
+  transition: all .3s;
+}
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+.navMobile {
+  display: none;
+  flex-direction: column;
+  background: var(--bg-primary);
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+.navMobile.open { display: flex; }
+.navMobile button {
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  padding: 1rem 2rem;
+  text-align: left;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: .95rem;
+  cursor: pointer;
+  transition: all .3s;
+}
+.navMobile button:hover {
+  color: var(--red);
+  background: rgba(167,52,54,.05);
+  padding-left: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .navDesktop { display: none; }
+  .hamburger  { display: flex; }
+}
