@@ -76,21 +76,7 @@ jobs:
           cp -r admin/dist/.  deploy/admin/
 
           # 404 inteligente: redirige /admin/* al admin y el resto al client
-          cat > deploy/404.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head><meta charset="utf-8"><title>NORIA Films</title>
-          <script>
-            var p = window.location.pathname;
-            var b = '/Noria-Films-Web';
-            if (p.startsWith(b + '/admin')) {
-              window.location.replace(b + '/admin/?r=' + encodeURIComponent(p.replace(b + '/admin', '') || '/'));
-            } else {
-              window.location.replace(b + '/?r=' + encodeURIComponent(p.replace(b, '') || '/'));
-            }
-          </script>
-          </head><body></body></html>
-          EOF
+          printf '<!DOCTYPE html><html><head><meta charset="utf-8"><title>NORIA</title><script>var p=window.location.pathname,b="/Noria-Films-Web";if(p.startsWith(b+"/admin")){window.location.replace(b+"/admin/?r="+encodeURIComponent(p.replace(b+"/admin","")||"/"));}else{window.location.replace(b+"/?r="+encodeURIComponent(p.replace(b,"")||"/"));}</script></head><body></body></html>' > deploy/404.html
 
       - name: Deploy → rama gh-pages
         uses: peaceiris/actions-gh-pages@v4
