@@ -48,7 +48,8 @@ jobs:
       # Al copiar index.html como 404.html, la SPA carga igual y React Router
       # maneja la ruta correctamente.
       - name: Fix React Router (client)
-        run: cp dist/index.html dist/404.html
+        run: |
+          sed -i 's|<head>|<head><script>(function(){var r=new URLSearchParams(location.search).get("r");if(r)history.replaceState(null,"",r);}());</script>|' dist/index.html
         working-directory: client
 
       # ── ADMIN ───────────────────────────────────────────────────
@@ -63,7 +64,8 @@ jobs:
         working-directory: admin
 
       - name: Fix React Router (admin)
-        run: cp dist/index.html dist/404.html
+        run: |
+          sed -i 's|<head>|<head><script>(function(){var r=new URLSearchParams(location.search).get("r");if(r)history.replaceState(null,"",r);}());</script>|' dist/index.html
         working-directory: admin
 
       # ── COMBINAR Y DEPLOYAR ─────────────────────────────────────
@@ -72,6 +74,23 @@ jobs:
           mkdir -p deploy/admin
           cp -r client/dist/. deploy/
           cp -r admin/dist/.  deploy/admin/
+
+          # 404 inteligente: redirige /admin/* al admin y el resto al client
+          cat > deploy/404.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head><meta charset="utf-8"><title>NORIA Films</title>
+          <script>
+            var p = window.location.pathname;
+            var b = '/Noria-Films-Web';
+            if (p.startsWith(b + '/admin')) {
+              window.location.replace(b + '/admin/?r=' + encodeURIComponent(p.replace(b + '/admin', '') || '/'));
+            } else {
+              window.location.replace(b + '/?r=' + encodeURIComponent(p.replace(b, '') || '/'));
+            }
+          </script>
+          </head><body></body></html>
+          EOF
 
       - name: Deploy → rama gh-pages
         uses: peaceiris/actions-gh-pages@v4
