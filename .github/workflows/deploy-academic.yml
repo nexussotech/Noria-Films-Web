@@ -37,11 +37,13 @@ jobs:
         run: npm install
         working-directory: client
 
+      - name: Crear .env.production — client
+        run: echo "VITE_API_URL=https://noria-films-web.onrender.com/api" > .env.production
+        working-directory: client
+
       - name: Build client
         run: npm run build -- --base=/Noria-Films-Web/
         working-directory: client
-        env:
-          VITE_API_URL: https://noria-films-web.onrender.com/api
 
       # Fix React Router en GitHub Pages:
       # GitHub Pages devuelve 404.html cuando la ruta no existe como archivo.
@@ -56,11 +58,13 @@ jobs:
         run: npm install
         working-directory: admin
 
+      - name: Crear .env.production — admin
+        run: echo "VITE_API_URL=https://noria-films-web.onrender.com/api" > .env.production
+        working-directory: admin
+
       - name: Build admin
         run: npm run build -- --base=/Noria-Films-Web/admin/
         working-directory: admin
-        env:
-          VITE_API_URL: https://noria-films-web.onrender.com/api
 
       - name: Fix React Router (admin)
         run: cp dist/index.html dist/404.html
