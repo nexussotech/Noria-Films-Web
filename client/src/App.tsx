@@ -17,7 +17,7 @@ const Fallback = () => <div className="page-loading">Cargando...</div>
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Suspense fallback={<Fallback />}>
           <Routes>
             {/* Públicas */}

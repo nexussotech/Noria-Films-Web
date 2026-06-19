@@ -34,7 +34,7 @@ function AdminShell() {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Toaster
           position="bottom-right"
           toastOptions={{
