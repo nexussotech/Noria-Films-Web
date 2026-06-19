@@ -1,11 +1,21 @@
 const nodemailer = require('nodemailer')
 const env = require('../config/env')
 
+function esc(str) {
+  if (str == null) return ''
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+}
+
 const configured = !!(env.MAIL_USER && env.MAIL_PASS && env.MAIL_HOST)
 
 const transporter = configured
   ? nodemailer.createTransport({
-      host: env.MAIL_HOST, port: env.MAIL_PORT, secure: false,
+      host: env.MAIL_HOST, port: env.MAIL_PORT, secure: env.MAIL_PORT === 465,
       auth: { user: env.MAIL_USER, pass: env.MAIL_PASS },
     })
   : null
@@ -61,22 +71,22 @@ function layout(title, body) {
 function dataTable(rows) {
   const cells = rows.map(([label, value]) => `
     <tr>
-      <td style="padding:10px 16px;color:#8b8fa8;font-size:12px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;width:40%;border-bottom:1px solid #2a2d3a">${label}</td>
-      <td style="padding:10px 16px;color:#F3F3F1;font-size:14px;border-bottom:1px solid #2a2d3a">${value}</td>
+      <td style="padding:10px 16px;color:#8b8fa8;font-size:12px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;width:40%;border-bottom:1px solid #2a2d3a">${esc(label)}</td>
+      <td style="padding:10px 16px;color:#F3F3F1;font-size:14px;border-bottom:1px solid #2a2d3a">${esc(value)}</td>
     </tr>`).join('')
   return `<table style="width:100%;border-collapse:collapse;background:#111420;border:1px solid #2a2d3a;border-radius:3px;margin:20px 0">${cells}</table>`
 }
 
 function heading(text) {
-  return `<h2 style="margin:0 0 8px;color:#F3F3F1;font-size:18px;font-weight:700">${text}</h2>`
+  return `<h2 style="margin:0 0 8px;color:#F3F3F1;font-size:18px;font-weight:700">${esc(text)}</h2>`
 }
 
 function subtext(text) {
-  return `<p style="margin:0 0 24px;color:#8b8fa8;font-size:14px;line-height:1.6">${text}</p>`
+  return `<p style="margin:0 0 24px;color:#8b8fa8;font-size:14px;line-height:1.6">${esc(text)}</p>`
 }
 
 function notice(text) {
-  return `<p style="margin:20px 0 0;padding:12px 16px;background:rgba(167,52,54,.1);border-left:3px solid #A73436;color:#8b8fa8;font-size:12px;line-height:1.7">${text}</p>`
+  return `<p style="margin:20px 0 0;padding:12px 16px;background:rgba(167,52,54,.1);border-left:3px solid #A73436;color:#8b8fa8;font-size:12px;line-height:1.7">${esc(text)}</p>`
 }
 
 // ── Templates ─────────────────────────────────────────────────
@@ -95,13 +105,12 @@ const t = {
     `),
   }),
 
-  quoteCreated: (name, service, quoteCode, breakdown) => ({
-    subject: `Cotización ${quoteCode} — ${service}`,
+  quoteCreated: (name, service, breakdown) => ({
+    subject: `Cotización — ${service}`,
     html: layout('Cotización generada', `
       ${heading('Cotización generada')}
       ${subtext(`Estimado/a ${name}, hemos registrado tu solicitud de cotización para el siguiente servicio.`)}
       ${dataTable([
-        ['Número de cotización', quoteCode || '—'],
         ['Servicio', service],
         ['Precio base', breakdown ? `$${Number(breakdown.base_price).toLocaleString('es-MX')} MXN` : '—'],
         ['Duración del rodaje', breakdown ? `$${Number(breakdown.production_cost).toLocaleString('es-MX')} MXN` : '—'],
@@ -113,13 +122,12 @@ const t = {
     `),
   }),
 
-  quoteNotifyAdmin: (name, service, email, quoteCode) => ({
-    subject: `Nueva cotización ${quoteCode || ''} — ${service}`,
+  quoteNotifyAdmin: (name, service, email) => ({
+    subject: `Nueva cotización — ${service}`,
     html: layout('Nueva cotización', `
       ${heading('Nueva cotización registrada')}
       ${subtext('Se ha generado una nueva cotización en el sistema.')}
       ${dataTable([
-        ['Número de cotización', quoteCode || '—'],
         ['Usuario', name],
         ['Correo', email || '—'],
         ['Servicio', service],
@@ -193,20 +201,20 @@ const t = {
   }),
 
   contactReply: (name, originalSubject, replyText) => ({
-    subject: `RE: ${originalSubject} — NORIA Creative Film Studio`,
+    subject: `RE: ${esc(originalSubject)} — NORIA Creative Film Studio`,
     html: layout('Respuesta a su consulta', `
       ${heading('Respuesta a su consulta')}
-      ${subtext(`Estimado/a ${name}, nuestro equipo le responde a su mensaje.`)}
+      ${subtext(`Estimado/a ${esc(name)}, nuestro equipo le responde a su mensaje.`)}
       <div style="margin:16px 0;padding:16px;background:#111420;border:1px solid #2a2d3a;border-radius:3px">
         <p style="margin:0 0 8px;color:#8b8fa8;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Respuesta de NORIA Creative Film Studio</p>
-        <p style="margin:0;color:#F3F3F1;font-size:14px;line-height:1.75;white-space:pre-wrap">${replyText}</p>
+        <p style="margin:0;color:#F3F3F1;font-size:14px;line-height:1.75;white-space:pre-wrap">${esc(replyText)}</p>
       </div>
       ${notice('Si tiene más preguntas, no dude en contactarnos nuevamente a través de nuestro formulario de contacto.')}
     `),
   }),
 
   contactNotifyAdmin: (name, subject, email, phone, message) => ({
-    subject: `Nuevo mensaje de contacto — ${subject}`,
+    subject: `Nuevo mensaje de contacto — ${esc(subject)}`,
     html: layout('Nuevo mensaje', `
       ${heading('Nuevo mensaje de contacto')}
       ${subtext('Se ha recibido un nuevo mensaje a través del formulario de contacto.')}
@@ -218,7 +226,7 @@ const t = {
       ])}
       <div style="margin:16px 0;padding:16px;background:#111420;border:1px solid #2a2d3a;border-radius:3px">
         <p style="margin:0 0 8px;color:#8b8fa8;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Mensaje</p>
-        <p style="margin:0;color:#F3F3F1;font-size:14px;line-height:1.7;white-space:pre-wrap">${message}</p>
+        <p style="margin:0;color:#F3F3F1;font-size:14px;line-height:1.7;white-space:pre-wrap">${esc(message)}</p>
       </div>
     `),
   }),
