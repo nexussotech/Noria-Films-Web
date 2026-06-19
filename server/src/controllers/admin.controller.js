@@ -47,8 +47,16 @@ exports.deleteSlot = async (req, res) => {
       [req.params.id]
     )
     if (appt) return R.conflict(res, 'El slot tiene una cita activa, cancela la cita primero')
-    // Eliminar citas canceladas/completadas que referencian este slot
-    await db.query("DELETE FROM appointments WHERE slot_id=? AND status IN ('cancelled','completed')", [req.params.id])
+    // Borrar en cascada: recordatorios → citas inactivas → slot
+    const [inactiveAppts] = await db.query(
+      "SELECT id FROM appointments WHERE slot_id=? AND status IN ('cancelled','completed')",
+      [req.params.id]
+    )
+    if (inactiveAppts.length) {
+      const ids = inactiveAppts.map((a) => a.id)
+      await db.query(`DELETE FROM appointment_reminders WHERE appointment_id IN (${ids.map(() => '?').join(',')})`, ids)
+      await db.query(`DELETE FROM appointments WHERE id IN (${ids.map(() => '?').join(',')})`, ids)
+    }
     await db.query('DELETE FROM availability_slots WHERE id=?', [req.params.id])
     return R.ok(res, { message: 'Slot eliminado' })
   } catch (err) { return R.serverError(res, err) }
