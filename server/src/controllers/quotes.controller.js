@@ -52,17 +52,12 @@ exports.create = async (req, res) => {
       ]
     )
 
-    // Generar código profesional: NOR-{ICONO}-{ID con ceros}
-    const quoteCode = `NOR-${svc.icon || 'XX'}-${String(result.insertId).padStart(4, '0')}`
-    await db.query('UPDATE quotes SET quote_code=? WHERE id=?', [quoteCode, result.insertId])
-
     const [[user]] = await db.query('SELECT full_name, email FROM users WHERE id=?', [userId])
-    await send({ to: user.email, ...t.quoteCreated(user.full_name, svc.name, quoteCode, { base_price: svc.base_price, ...breakdown }) })
-    if (env.CLIENT_EMAIL_TO) await send({ to: env.CLIENT_EMAIL_TO, ...t.quoteNotifyAdmin(user.full_name, svc.name, user.email, quoteCode) })
+    send({ to: user.email, ...t.quoteCreated(user.full_name, svc.name, { base_price: svc.base_price, ...breakdown }) }).catch((e) => console.error('[MAIL quote-user]', e.message))
+    if (env.CLIENT_EMAIL_TO) send({ to: env.CLIENT_EMAIL_TO, ...t.quoteNotifyAdmin(user.full_name, svc.name, user.email) }).catch((e) => console.error('[MAIL quote-admin]', e.message))
 
     return R.created(res, {
       id:         result.insertId,
-      quote_code: quoteCode,
       status:     'generated',
       service_name:        svc.name,
       base_price:          Number(svc.base_price),
@@ -79,7 +74,7 @@ exports.create = async (req, res) => {
 exports.myQuotes = async (req, res) => {
   try {
     const [rows] = await db.query(
-      `SELECT q.id, q.quote_code, q.service_id, q.shooting_duration, q.needs_drone, q.delivery_time,
+      `SELECT q.id, q.service_id, q.shooting_duration, q.needs_drone, q.delivery_time,
               q.project_type, q.extra_notes,
               q.production_cost, q.equipment_cost, q.postproduction_cost,
               q.extras_cost, q.estimated_price, q.status,
@@ -120,7 +115,7 @@ exports.getOne = async (req, res) => {
 exports.listAll = async (req, res) => {
   try {
     const { status, user_id, service_id } = req.query
-    let sql = `SELECT q.*, q.quote_code, s.name AS service_name, u.full_name, u.email
+    let sql = `SELECT q.*, s.name AS service_name, u.full_name, u.email
                FROM quotes q
                JOIN services s ON s.id = q.service_id
                JOIN users   u  ON u.id = q.user_id

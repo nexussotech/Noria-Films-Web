@@ -16,7 +16,7 @@ exports.register = async (req, res) => {
       [full_name, email, password_hash, phone || null]
     )
 
-    await send({ to: email, ...t.welcome(full_name) })
+    send({ to: email, ...t.welcome(full_name) }).catch((e) => console.error('[MAIL welcome]', e.message))
 
     const token = sign({ id: result.insertId, role: 'user' })
     return R.created(res, { token, user: { id: result.insertId, full_name, email, role: 'user' } })

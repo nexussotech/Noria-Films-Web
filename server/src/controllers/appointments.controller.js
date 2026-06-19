@@ -105,13 +105,13 @@ exports.create = async (req, res) => {
     const svcName  = qfull?.service_name ?? '—'
     const price    = qfull?.estimated_price ?? null
 
-    await send({ to: user.email, ...t.appointmentBooked(
+    send({ to: user.email, ...t.appointmentBooked(
       user.full_name, dateStr, startStr, endStr, mType, svcName, price, user.phone, notes
-    )})
+    )}).catch((e) => console.error('[MAIL appt-user]', e.message))
     if (env.CLIENT_EMAIL_TO) {
-      await send({ to: env.CLIENT_EMAIL_TO, ...t.appointmentNotifyAdmin(
+      send({ to: env.CLIENT_EMAIL_TO, ...t.appointmentNotifyAdmin(
         user.full_name, user.email, dateStr, startStr, mType, svcName, price, user.phone, notes
-      )})
+      )}).catch((e) => console.error('[MAIL appt-admin]', e.message))
     }
 
     return R.created(res, {
