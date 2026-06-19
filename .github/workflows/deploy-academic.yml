@@ -1,0 +1,81 @@
+
+# Deploy académico temporal — GitHub Pages
+# Borra este archivo cuando hagas el deploy real para el cliente.
+#
+# Despliega:
+#   client → https://therichardlabs-source.github.io/noria-films/
+#   admin  → https://therichardlabs-source.github.io/noria-films/admin/
+#
+# NO modifica vite.config.ts ni ningún otro archivo del proyecto.
+# El --base se pasa en tiempo de build. El 404.html se genera aquí.
+
+name: Deploy Académico → GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ── CLIENT ──────────────────────────────────────────────────
+      - name: Instalar dependencias — client
+        run: npm install
+        working-directory: client
+
+      - name: Build client
+        run: npm run build -- --base=/noria-films/
+        working-directory: client
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+      # Fix React Router en GitHub Pages:
+      # GitHub Pages devuelve 404.html cuando la ruta no existe como archivo.
+      # Al copiar index.html como 404.html, la SPA carga igual y React Router
+      # maneja la ruta correctamente.
+      - name: Fix React Router (client)
+        run: cp dist/index.html dist/404.html
+        working-directory: client
+
+      # ── ADMIN ───────────────────────────────────────────────────
+      - name: Instalar dependencias — admin
+        run: npm install
+        working-directory: admin
+
+      - name: Build admin
+        run: npm run build -- --base=/noria-films/admin/
+        working-directory: admin
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+      - name: Fix React Router (admin)
+        run: cp dist/index.html dist/404.html
+        working-directory: admin
+
+      # ── COMBINAR Y DEPLOYAR ─────────────────────────────────────
+      - name: Preparar carpeta de deploy
+        run: |
+          mkdir -p deploy/admin
+          cp -r client/dist/. deploy/
+          cp -r admin/dist/.  deploy/admin/
+
+      - name: Deploy → rama gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./deploy
+          force_orphan: true
