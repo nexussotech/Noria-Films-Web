@@ -25,28 +25,32 @@ const transporter = smtpConfigured
   : null
 
 async function send({ to, subject, html }) {
-  if (resendConfigured) {
-    const { Resend } = require('resend')
-    const resend = new Resend(env.RESEND_API_KEY)
-    const { error } = await resend.emails.send({
-      from: env.RESEND_FROM,
-      to,
-      subject,
-      html,
-    })
-    if (error) throw new Error(`Resend error: ${error.message}`)
-    return
-  }
+  try {
+    if (resendConfigured) {
+      const { Resend } = require('resend')
+      const resend = new Resend(env.RESEND_API_KEY)
+      const { error } = await resend.emails.send({
+        from: env.RESEND_FROM,
+        to,
+        subject,
+        html,
+      })
+      if (error) console.error(`[RESEND ERROR] → ${to} | ${error.message}`)
+      return
+    }
 
-  if (transporter) {
-    await transporter.sendMail({
-      from: `"NORIA Creative Film Studio" <${env.MAIL_USER}>`,
-      to, subject, html,
-    })
-    return
-  }
+    if (transporter) {
+      await transporter.sendMail({
+        from: `"NORIA Creative Film Studio" <${env.MAIL_USER}>`,
+        to, subject, html,
+      })
+      return
+    }
 
-  console.log(`[EMAIL SIMULADO] → ${to} | ${subject}`)
+    console.log(`[EMAIL SIMULADO] → ${to} | ${subject}`)
+  } catch (e) {
+    console.error(`[EMAIL ERROR] → ${to} | ${e.message}`)
+  }
 }
 
 // ── Layout base ─────────────────────────────────────────────
