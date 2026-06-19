@@ -11,9 +11,13 @@ function esc(str) {
     .replace(/'/g, '&#x27;')
 }
 
-const configured = !!(env.MAIL_USER && env.MAIL_PASS && env.MAIL_HOST)
+// Resend (HTTP API) — preferred in production; no SMTP port restrictions
+const resendConfigured = !!env.RESEND_API_KEY
 
-const transporter = configured
+// Nodemailer SMTP — fallback for local/dev
+const smtpConfigured = !!(env.MAIL_USER && env.MAIL_PASS && env.MAIL_HOST)
+
+const transporter = smtpConfigured
   ? nodemailer.createTransport({
       host: env.MAIL_HOST, port: env.MAIL_PORT, secure: env.MAIL_PORT === 465,
       auth: { user: env.MAIL_USER, pass: env.MAIL_PASS },
@@ -21,14 +25,28 @@ const transporter = configured
   : null
 
 async function send({ to, subject, html }) {
-  if (!transporter) {
-    console.log(`[EMAIL SIMULADO] → ${to} | ${subject}`)
+  if (resendConfigured) {
+    const { Resend } = require('resend')
+    const resend = new Resend(env.RESEND_API_KEY)
+    const { error } = await resend.emails.send({
+      from: env.RESEND_FROM,
+      to,
+      subject,
+      html,
+    })
+    if (error) throw new Error(`Resend error: ${error.message}`)
     return
   }
-  await transporter.sendMail({
-    from: `"NORIA Creative Film Studio" <${env.MAIL_USER}>`,
-    to, subject, html,
-  })
+
+  if (transporter) {
+    await transporter.sendMail({
+      from: `"NORIA Creative Film Studio" <${env.MAIL_USER}>`,
+      to, subject, html,
+    })
+    return
+  }
+
+  console.log(`[EMAIL SIMULADO] → ${to} | ${subject}`)
 }
 
 // ── Layout base ─────────────────────────────────────────────
