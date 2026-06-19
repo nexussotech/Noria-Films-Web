@@ -38,7 +38,7 @@ jobs:
         working-directory: client
 
       - name: Build client
-        run: npm run build -- --base=/noria-films/
+        run: npm run build -- --base=/Noria-Films-Web/
         working-directory: client
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
@@ -57,7 +57,7 @@ jobs:
         working-directory: admin
 
       - name: Build admin
-        run: npm run build -- --base=/noria-films/admin/
+        run: npm run build -- --base=/Noria-Films-Web/admin/
         working-directory: admin
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
