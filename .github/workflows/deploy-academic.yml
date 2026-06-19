@@ -49,7 +49,7 @@ jobs:
       # maneja la ruta correctamente.
       - name: Fix React Router (client)
         run: |
-          sed -i 's|<head>|<head><script>(function(){var r=new URLSearchParams(location.search).get("r");if(r)history.replaceState(null,"",r);}());</script>|' dist/index.html
+          sed -i 's|<head>|<head><script>(function(){var r=new URLSearchParams(location.search).get("r");if(r)history.replaceState(null,"","/Noria-Films-Web"+r);}());</script>|' dist/index.html
         working-directory: client
 
       # ── ADMIN ───────────────────────────────────────────────────
@@ -65,7 +65,7 @@ jobs:
 
       - name: Fix React Router (admin)
         run: |
-          sed -i 's|<head>|<head><script>(function(){var r=new URLSearchParams(location.search).get("r");if(r)history.replaceState(null,"",r);}());</script>|' dist/index.html
+          sed -i 's|<head>|<head><script>(function(){var r=new URLSearchParams(location.search).get("r");if(r)history.replaceState(null,"","/Noria-Films-Web/admin"+r);}());</script>|' dist/index.html
         working-directory: admin
 
       # ── COMBINAR Y DEPLOYAR ─────────────────────────────────────
