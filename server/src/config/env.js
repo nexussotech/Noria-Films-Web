@@ -25,6 +25,4 @@ module.exports = {
   MAIL_USER:      process.env.MAIL_USER      || '',
   MAIL_PASS:      process.env.MAIL_PASS      || '',
   CLIENT_EMAIL_TO: process.env.CLIENT_EMAIL_TO || 'contacto@noriafilms.com',
-  RESEND_API_KEY: process.env.RESEND_API_KEY  || '',
-  RESEND_FROM:    process.env.RESEND_FROM     || 'NORIA Creative Film Studio <noreply@noriafilms.com>',
 }

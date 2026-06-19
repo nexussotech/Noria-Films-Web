@@ -11,8 +11,8 @@ exports.create = async (req, res) => {
       'INSERT INTO contact_messages (full_name,email,phone,subject,message) VALUES (?,?,?,?,?)',
       [full_name, email, phone || null, subject, message]
     )
-    await send({ to: email, ...t.contactAck(full_name) })
-    if (env.CLIENT_EMAIL_TO) await send({ to: env.CLIENT_EMAIL_TO, ...t.contactNotifyAdmin(full_name, subject, email, phone, message) })
+    send({ to: email, ...t.contactAck(full_name) }).catch((e) => console.error('[MAIL contact-ack]', e.message))
+    if (env.CLIENT_EMAIL_TO) send({ to: env.CLIENT_EMAIL_TO, ...t.contactNotifyAdmin(full_name, subject, email, phone, message) }).catch((e) => console.error('[MAIL contact-admin]', e.message))
     return R.created(res, { message: 'Mensaje enviado' })
   } catch (err) { return R.serverError(res, err) }
 }
