@@ -3,9 +3,57 @@
   min-height: 100vh;
 }
 
+.mainCol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .main {
   flex: 1;
   min-width: 0;
   background: var(--bg);
   overflow-y: auto;
+}
+
+.topbar { display: none; }
+.overlay { display: none; }
+
+.menuBtn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--cream);
+  width: 34px;
+  height: 34px;
+  border-radius: 3px;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 880px) {
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    padding: .8rem 1rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 15;
+  }
+  .topbarLogo { width: 22px; height: 22px; }
+  .topbarBrand { font-size: .85rem; font-weight: 700; letter-spacing: .06em; }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 20;
+  }
 }

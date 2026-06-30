@@ -5,7 +5,7 @@
   align-items: center;
   flex-wrap: wrap;
 }
-.searchInput { width: 280px; }
+.searchInput { width: 280px; max-width: 100%; }
 
 .row { cursor: pointer; }
 

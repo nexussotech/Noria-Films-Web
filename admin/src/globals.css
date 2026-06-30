@@ -99,3 +99,14 @@ select, input, textarea { font-family: var(--font); }
 /* ── Section card ── */
 .section-card { background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 1.5rem; }
 .section-title { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--gray); margin-bottom: 1.2rem; font-weight: 600; }
+
+/* ── Responsive ── */
+@media (max-width: 880px) {
+  .admin-page { padding: 1.4rem 1.2rem; }
+  .section-card { padding: 1.1rem; }
+}
+@media (max-width: 480px) {
+  .admin-page { padding: 1.1rem .9rem; }
+  .admin-title { font-size: 1.25rem; }
+  .tbl { min-width: 480px; }
+}

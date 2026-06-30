@@ -12,7 +12,12 @@ const NAV = [
   { to: '/mensajes',      label: 'Mensajes',        icon: '◌' },
 ]
 
-export default function Sidebar() {
+interface SidebarProps {
+  open?: boolean
+  onClose?: () => void
+}
+
+export default function Sidebar({ open = false, onClose }: SidebarProps) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
@@ -22,11 +27,12 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${open ? styles.open : ''}`}>
       <div className={styles.brand}>
         <img src="/assets/images/logo-icon-b.png" alt="NORIA" className={styles.logo} />
         <span className={styles.brandName}>NORIA</span>
         <span className={styles.brandSub}>Admin</span>
+        <button className={styles.closeBtn} onClick={onClose} aria-label="Cerrar menú">✕</button>
       </div>
 
       <nav className={styles.nav}>
@@ -35,6 +41,7 @@ export default function Sidebar() {
             key={item.to}
             to={item.to}
             className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}
+            onClick={onClose}
           >
             <span className={styles.icon}>{item.icon}</span>
             <span>{item.label}</span>
