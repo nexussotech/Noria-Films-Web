@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-export function useReveal(threshold = 0.12) {
+export function useReveal(threshold = 0.12, deps: readonly unknown[] = []) {
   const ref = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -21,7 +21,8 @@ export function useReveal(threshold = 0.12) {
     })
 
     return () => observer.disconnect()
-  }, [threshold])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [threshold, ...deps])
 
   return ref
 }

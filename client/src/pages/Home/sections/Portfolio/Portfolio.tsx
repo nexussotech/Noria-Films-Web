@@ -5,7 +5,7 @@ import styles from './Portfolio.module.css'
 
 export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState('todos')
-  const ref = useReveal(0.08)
+  const ref = useReveal(0.08, [activeFilter])
 
   const filtered = activeFilter === 'todos'
     ? PROJECTS
