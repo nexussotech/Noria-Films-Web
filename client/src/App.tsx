@@ -9,7 +9,6 @@ const Login        = lazy(() => import('./pages/Login/Login'))
 const Register     = lazy(() => import('./pages/Register/Register'))
 const Quote        = lazy(() => import('./pages/Quote/Quote'))
 const MyQuotes     = lazy(() => import('./pages/MyQuotes/MyQuotes'))
-const Schedule     = lazy(() => import('./pages/Schedule/Schedule'))
 const NotFound     = lazy(() => import('./pages/NotFound/NotFound'))
 
 const Fallback = () => <div className="page-loading">Cargando...</div>
@@ -31,9 +30,6 @@ export default function App() {
             } />
             <Route path="/mis-cotizaciones" element={
               <ProtectedRoute><MyQuotes /></ProtectedRoute>
-            } />
-            <Route path="/agendar/:quoteId" element={
-              <ProtectedRoute><Schedule /></ProtectedRoute>
             } />
 
             <Route path="*" element={<NotFound />} />

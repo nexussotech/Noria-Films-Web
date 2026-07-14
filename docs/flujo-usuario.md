@@ -76,54 +76,7 @@ Usuario autenticado (header muestra nombre + menú)
 
 ---
 
-## 5. Flujo de Agendamiento de Cita
-
-```
-/mis-cotizaciones
-    │
-    ├── Lista de cotizaciones del usuario (GET /api/quotes/my)
-    │
-    └── Click "Agendar" en cotización con status='generated'
-            └── /agendar/:quoteId
-                    │
-                    ├── Carga en paralelo:
-                    │       ├── Detalle de cotización (GET /api/quotes/:id)
-                    │       └── Slots disponibles (GET /api/appointments/available-slots)
-                    │
-                    ├── Seleccionar fecha y hora del slot disponible
-                    │
-                    ├── Seleccionar modalidad: Virtual / Presencial
-                    │
-                    ├── Notas opcionales
-                    │
-                    └── Confirmar → POST /api/appointments
-                            ├── OK (201):
-                            │       ├── Slot marcado como reservado (UNIQUE constraint)
-                            │       ├── Cotización cambia a status='scheduled'
-                            │       ├── Email de confirmación al usuario
-                            │       ├── Email de notificación al admin
-                            │       └── Recordatorio 24h antes creado en appointment_reminders
-                            └── Error (409 slot ya ocupado, etc.) → mensaje de error
-```
-
----
-
-## 6. Flujo de Recordatorio Automático
-
-```
-node-cron (cada 10 minutos)
-    │
-    └── Consulta appointment_reminders WHERE status='pending' AND send_at <= NOW()
-            ├── Para cada recordatorio pendiente:
-            │       ├── Envía email al usuario (o simula en dev)
-            │       ├── Actualiza status='sent' + sent_at=NOW()
-            │       └── Si falla: status='failed'
-            └── Log: "[CRON] N recordatorio(s) procesados"
-```
-
----
-
-## 7. Flujo del Administrador
+## 5. Flujo del Administrador
 
 ```
 http://localhost:5174  (app independiente)
@@ -133,15 +86,14 @@ http://localhost:5174  (app independiente)
                     └── Dashboard /dashboard
                             │
                             ├── Métricas globales (GET /api/admin/dashboard/stats)
-                            │       └── Gráfica de embudo: usuarios → cotizaciones → citas
+                            │       └── Gráfica de embudo: usuarios → cotizaciones
                             │
                             ├── Usuarios (/usuarios)
                             │       ├── Buscar por nombre/email (controlled + tabla)
-                            │       ├── Filtrar: todos / con cotización / con cita
+                            │       ├── Filtrar: todos / con cotización
                             │       └── Detalle (/usuarios/:id):
                             │               ├── Activar/desactivar usuario
-                            │               ├── Historial de cotizaciones
-                            │               └── Historial de citas
+                            │               └── Historial de cotizaciones
                             │
                             ├── Servicios (/servicios)
                             │       ├── Ver grid de servicios
@@ -152,16 +104,6 @@ http://localhost:5174  (app independiente)
                             │       ├── Filtrar por status
                             │       ├── Expandir fila para ver detalles
                             │       └── Cambiar status directamente
-                            │
-                            ├── Citas (/citas)
-                            │       ├── Filtrar por status
-                            │       └── Cambiar status (confirmar, completar, cancelar)
-                            │
-                            ├── Disponibilidad (/disponibilidad)
-                            │       ├── Crear slots de horario (fecha + hora inicio + fin)
-                            │       ├── Eliminar slots existentes
-                            │       ├── Bloquear fechas completas (con motivo)
-                            │       └── Desbloquear fechas
                             │
                             └── Mensajes (/mensajes)
                                     ├── Filtrar por status (nuevos/leídos/archivados)

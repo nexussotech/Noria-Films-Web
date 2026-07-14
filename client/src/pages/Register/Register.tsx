@@ -55,7 +55,7 @@ export default function Register() {
       <div className={styles.card}>
         <img src="/assets/images/logo-full-b.png" alt="NORIA Films" className={styles.logo} />
         <h1 className={styles.title}>Crear Cuenta</h1>
-        <p className={styles.subtitle}>Regístrate para cotizar y agendar citas</p>
+        <p className={styles.subtitle}>Regístrate para solicitar cotizaciones</p>
 
         {error && <div className={styles.error}>{error}</div>}
 

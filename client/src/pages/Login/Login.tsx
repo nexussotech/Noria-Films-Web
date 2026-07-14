@@ -50,7 +50,7 @@ export default function Login() {
       <div className={styles.card}>
         <img src="/assets/images/logo-full-b.png" alt="NORIA Films" className={styles.logo} />
         <h1 className={styles.title}>Iniciar Sesión</h1>
-        <p className={styles.subtitle}>Accede a tu cuenta para gestionar cotizaciones y citas</p>
+        <p className={styles.subtitle}>Accede a tu cuenta para gestionar tus cotizaciones</p>
 
         {error && <div className={styles.error}>{error}</div>}
 

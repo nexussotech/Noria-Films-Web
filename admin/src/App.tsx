@@ -10,8 +10,6 @@ const Dashboard     = lazy(() => import('./pages/Dashboard/Dashboard'))
 const Users         = lazy(() => import('./pages/Users/Users'))
 const UserDetail    = lazy(() => import('./pages/Users/UserDetail'))
 const Quotes        = lazy(() => import('./pages/Quotes/Quotes'))
-const Appointments  = lazy(() => import('./pages/Appointments/Appointments'))
-const Availability  = lazy(() => import('./pages/Availability/Availability'))
 const Messages      = lazy(() => import('./pages/Messages/Messages'))
 const Services      = lazy(() => import('./pages/Services/Services'))
 const NotFound      = lazy(() => import('./pages/NotFound/NotFound'))
@@ -55,8 +53,6 @@ export default function App() {
               <Route path="usuarios/:id"      element={<UserDetail />} />
               <Route path="servicios"         element={<Services />} />
               <Route path="cotizaciones"      element={<Quotes />} />
-              <Route path="citas"             element={<Appointments />} />
-              <Route path="disponibilidad"    element={<Availability />} />
               <Route path="mensajes"          element={<Messages />} />
               <Route path="*"                 element={<NotFound />} />
             </Route>

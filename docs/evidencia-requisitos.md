@@ -18,8 +18,8 @@
 | Context API | `AuthContext` con `createContext` + `Provider` + `useContext` | `client/src/context/AuthContext.tsx` |
 | Eventos tipados | `FormEvent`, `ChangeEvent<HTMLInputElement>` | `Contact.tsx`, `Users.tsx` |
 | Funciones anidadas | Handlers definidos dentro del componente | `Services.tsx:41`, `Header.tsx:42` |
-| Promesas | `Promise.all([...])` para carga paralela | `Schedule.tsx` |
-| async / await | Todas las llamadas API | `Quote.tsx`, `Appointments.tsx`… |
+| Promesas | `Promise.all([...])` para carga paralela | `Quote.tsx` (servicios + pricing-config) |
+| async / await | Todas las llamadas API | `Quote.tsx`, `Quotes.tsx` (admin)… |
 | axios | Instancia con interceptor de auth | `client/src/lib/api.ts` |
 | loading/success/error | Estados de UI en cada operación async | `Contact.tsx:16`, `Dashboard.tsx:9–10` |
 | Formulario controlado | `value={form.field}` + `onChange` | `Login.tsx`, `Register.tsx`, `Contact.tsx` |
@@ -27,7 +27,7 @@
 | Renderizado condicional | Ternarios y `&&` | `Header.tsx:72`, `Services.tsx:121` |
 | Renderizado de listas | `.map()` con `key` | `Quotes.tsx:101`, `Services.tsx:106` |
 | React Router | `BrowserRouter`, `Routes`, `Route` | `client/App.tsx`, `admin/App.tsx` |
-| Rutas con parámetros | `:id`, `:quoteId` + `useParams()` | `admin/App.tsx`, `UserDetail.tsx`, `Schedule.tsx` |
+| Rutas con parámetros | `:id` + `useParams()` | `admin/App.tsx`, `UserDetail.tsx` |
 | Query params | `useSearchParams()` para `?redirect=` | `Login.tsx:14` |
 | Rutas anidadas | Layout route con `<Outlet />` en admin | `admin/App.tsx:40–52` |
 | NavLink | Active class en sidebar admin y dropdown cliente | `Sidebar.tsx:34`, `Header.tsx:79` |
@@ -53,10 +53,9 @@
 | CORS configurado | Whitelist `CLIENT_URL` + `ADMIN_URL` | `src/app.js:14–20` |
 | Helmet | Headers de seguridad HTTP | `src/app.js:11` |
 | Nodemailer | Email con modo simulado si sin SMTP | `src/services/email.service.js` |
-| node-cron | Recordatorios automáticos cada 10 min | `src/services/reminder.cron.js` |
 | bcryptjs | Hash de contraseñas, nunca texto plano | `src/controllers/auth.controller.js` |
 | jsonwebtoken | JWT para autenticación stateless | `src/config/jwt.js`, `src/middlewares/authenticateToken.js` |
-| DB Transactions | `BEGIN TRANSACTION` + `FOR UPDATE` anti race-condition | `src/controllers/appointments.controller.js` |
+| Rate limiting | `express-rate-limit` en `/auth` y `/contact` | `src/app.js` |
 
 ---
 
@@ -67,8 +66,8 @@
 | CRUD completo | Create/Read/Update en todas las entidades principales |
 | Verbos HTTP correctos | GET (leer), POST (crear), PUT (reemplazar), PATCH (actualizar parcial), DELETE (eliminar) |
 | Códigos de estado | 200, 201, 400, 401, 403, 404, 409, 500 |
-| Query params | `?status=`, `?search=`, `?hasQuote=`, `?hasAppointment=` |
-| Rutas con parámetros | `/users/:id`, `/quotes/:id`, `/appointments/:id/status` |
+| Query params | `?status=`, `?search=`, `?hasQuote=` |
+| Rutas con parámetros | `/users/:id`, `/quotes/:id`, `/quotes/:id/status` |
 | Endpoint de salud | `GET /api/health` |
 | Pricing público | `GET /api/quotes/pricing-config` |
 
@@ -93,14 +92,14 @@
 | Requisito | Implementación |
 |-----------|---------------|
 | Base de datos relacional | MySQL 9.0.1 |
-| 8 tablas | users, services, quotes, availability_slots, blocked_dates, appointments, appointment_reminders, contact_messages |
-| Foreign Keys | 7 constraints FK con ON DELETE implícito |
-| UNIQUE constraints | `email`, `(date, start_time)`, `slot_id` en appointments |
-| ENUMs | role, status, meeting_type, reminder_type, etc. |
+| 4 tablas | users, services, quotes, contact_messages |
+| Foreign Keys | `fk_quotes_user`, `fk_quotes_service` |
+| UNIQUE constraints | `email` en users |
+| ENUMs | role, status (por tabla) |
 | Pool de conexiones | `mysql2/promise` con `waitForConnections: true` |
 | Timezone | `timezone: '+00:00'` consistente |
 | Schema + Seed | `database/schema.sql`, `database/seed.sql` |
-| Migración | `database/migration_v2.sql` para cambios incrementales |
+| Migraciones | `database/migration_v2.sql` a `migration_v5.sql` para cambios incrementales |
 
 ---
 

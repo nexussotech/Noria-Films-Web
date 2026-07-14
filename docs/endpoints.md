@@ -37,24 +37,12 @@ Roles: `user` (usuario registrado), `admin` (panel de administración)
 | POST | `/quotes` | user | Crea cotización | `{ service_id, shooting_duration, needs_drone, delivery_time, project_type?, extra_notes? }` | `201 { id, estimated_price, breakdown }` |
 | GET | `/quotes/my` | user | Cotizaciones del usuario autenticado | — | `200 [ QuoteRow ]` |
 | GET | `/quotes/:id` | user | Detalle de una cotización propia | — | `200 QuoteRow` |
-| GET | `/quotes` | admin | Todas las cotizaciones | `?status=draft\|generated\|scheduled\|cancelled` | `200 [ QuoteRow ]` |
+| GET | `/quotes` | admin | Todas las cotizaciones | `?status=draft\|generated\|cancelled` | `200 [ QuoteRow ]` |
 | PATCH | `/quotes/:id/status` | admin | Cambia estado de cotización | `{ status }` | `200 { message }` |
 
 **Valores válidos:**
 - `shooting_duration`: `1_dia` | `2_dias` | `3_plus`
 - `delivery_time`: `3_semanas` | `1_semana` | `2_4_dias`
-
----
-
-## Appointments — `/api/appointments`
-
-| Método | Ruta | Rol | Descripción | Body esperado | Respuesta |
-|--------|------|-----|-------------|---------------|-----------|
-| GET | `/appointments/available-slots` | user | Slots disponibles (sin citas, sin bloqueos) | `?date=YYYY-MM-DD` | `200 [ { id, date, start_time, end_time } ]` |
-| POST | `/appointments` | user | Agenda cita (transacción con FOR UPDATE) | `{ quote_id, slot_id, meeting_type?, notes? }` | `201 { id, message, appointment }` |
-| GET | `/appointments/my` | user | Citas del usuario autenticado | — | `200 [ ApptRow ]` |
-| GET | `/appointments` | admin | Todas las citas | `?status=pending\|confirmed\|cancelled\|completed` | `200 [ ApptRow ]` |
-| PATCH | `/appointments/:id/status` | admin | Cambia estado de cita | `{ status }` | `200 { message }` |
 
 ---
 
@@ -72,13 +60,8 @@ Roles: `user` (usuario registrado), `admin` (panel de administración)
 
 | Método | Ruta | Rol | Descripción | Body esperado | Respuesta |
 |--------|------|-----|-------------|---------------|-----------|
-| GET | `/admin/dashboard/stats` | admin | Métricas del dashboard | — | `200 { total_users, total_quotes, users_with_quotes, users_with_appointments, conversion_rate, pending_quotes, pending_appointments, today_appointments, new_messages }` |
-| GET | `/admin/availability` | admin | Lista slots de disponibilidad | — | `200 [ { id, date, start_time, end_time, is_available } ]` |
-| POST | `/admin/availability` | admin | Crea slot de disponibilidad | `{ date, start_time, end_time }` | `201 { id, message }` |
-| DELETE | `/admin/availability/:id` | admin | Elimina slot | — | `200 { message }` |
-| GET | `/admin/blocked-dates` | admin | Lista fechas bloqueadas | — | `200 [ { id, date, reason } ]` |
-| POST | `/admin/blocked-dates` | admin | Bloquea una fecha | `{ date, reason? }` | `201 { id, message }` |
-| DELETE | `/admin/blocked-dates/:id` | admin | Desbloquea fecha | — | `200 { message }` |
+| GET | `/admin/dashboard/stats` | admin | Métricas del dashboard | — | `200 { total_users, total_quotes, users_with_quotes, conversion_rate, pending_quotes, new_messages }` |
+| POST | `/admin/contact/:id/reply` | admin | Responde un mensaje de contacto | `{ reply_text }` | `200 { message }` |
 
 ---
 
@@ -86,8 +69,8 @@ Roles: `user` (usuario registrado), `admin` (panel de administración)
 
 | Método | Ruta | Rol | Descripción | Body esperado | Respuesta |
 |--------|------|-----|-------------|---------------|-----------|
-| GET | `/users` | admin | Lista usuarios | `?search=&hasQuote=true&hasAppointment=true` | `200 [ AdminUser ]` |
-| GET | `/users/:id` | admin | Detalle de usuario + historial | — | `200 { user, quotes, appointments }` |
+| GET | `/users` | admin | Lista usuarios | `?search=&hasQuote=true` | `200 [ AdminUser ]` |
+| GET | `/users/:id` | admin | Detalle de usuario + historial | — | `200 { user, quotes }` |
 | PATCH | `/users/:id/status` | admin | Activa/desactiva usuario | `{ status: 'active'\|'inactive' }` | `200 { message }` |
 
 ---
@@ -110,5 +93,5 @@ Roles: `user` (usuario registrado), `admin` (panel de administración)
 | 401 | Sin autenticación o token expirado |
 | 403 | Sin permisos (rol insuficiente) |
 | 404 | Recurso no encontrado |
-| 409 | Conflicto (slot ya ocupado, email duplicado) |
+| 409 | Conflicto (email duplicado) |
 | 500 | Error interno del servidor |

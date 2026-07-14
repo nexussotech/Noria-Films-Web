@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS quotes (
   postproduction_cost  DECIMAL(10,2) NOT NULL DEFAULT 0,
   extras_cost          DECIMAL(10,2) NOT NULL DEFAULT 0,
   estimated_price      DECIMAL(10,2) DEFAULT NULL,
-  status               ENUM('draft','generated','scheduled','cancelled') NOT NULL DEFAULT 'draft',
+  status               ENUM('draft','generated','cancelled') NOT NULL DEFAULT 'draft',
   created_at           TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at           TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT pk_quotes          PRIMARY KEY (id),
@@ -67,61 +67,7 @@ CREATE TABLE IF NOT EXISTS quotes (
 ) ENGINE=InnoDB;
 
 -- ────────────────────────────────────────────────────────────
--- 4. AVAILABILITY_SLOTS
--- ────────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS availability_slots (
-  id                   INT       NOT NULL AUTO_INCREMENT,
-  date                 DATE      NOT NULL,
-  start_time           TIME      NOT NULL,
-  end_time             TIME      NOT NULL,
-  is_available         TINYINT(1) NOT NULL DEFAULT 1,
-  created_by_admin_id  INT       NOT NULL,
-  created_at           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT pk_slots    PRIMARY KEY (id),
-  CONSTRAINT uq_slot     UNIQUE (date, start_time),
-  CONSTRAINT fk_slot_admin FOREIGN KEY (created_by_admin_id) REFERENCES users(id)
-) ENGINE=InnoDB;
-
--- ────────────────────────────────────────────────────────────
--- 5. BLOCKED_DATES
--- ────────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS blocked_dates (
-  id                   INT          NOT NULL AUTO_INCREMENT,
-  date                 DATE         NOT NULL,
-  reason               VARCHAR(200) DEFAULT NULL,
-  created_by_admin_id  INT          NOT NULL,
-  created_at           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT pk_blocked       PRIMARY KEY (id),
-  CONSTRAINT uq_blocked_date  UNIQUE (date),
-  CONSTRAINT fk_blocked_admin FOREIGN KEY (created_by_admin_id) REFERENCES users(id)
-) ENGINE=InnoDB;
-
--- ────────────────────────────────────────────────────────────
--- 6. APPOINTMENTS
--- ────────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS appointments (
-  id               INT          NOT NULL AUTO_INCREMENT,
-  user_id          INT          NOT NULL,
-  quote_id         INT          NOT NULL,
-  slot_id          INT          NOT NULL,
-  appointment_date DATE         NOT NULL,
-  start_time       TIME         NOT NULL,
-  end_time         TIME         NOT NULL,
-  status           ENUM('pending','confirmed','cancelled','completed') NOT NULL DEFAULT 'pending',
-  meeting_type     ENUM('presencial','virtual') NOT NULL DEFAULT 'virtual',
-  notes            TEXT         DEFAULT NULL,
-  created_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT pk_appointments   PRIMARY KEY (id),
-  CONSTRAINT uq_appt_slot      UNIQUE (slot_id),
-  CONSTRAINT fk_appt_user      FOREIGN KEY (user_id)  REFERENCES users(id),
-  CONSTRAINT fk_appt_quote     FOREIGN KEY (quote_id) REFERENCES quotes(id),
-  CONSTRAINT fk_appt_slot      FOREIGN KEY (slot_id)  REFERENCES availability_slots(id)
-) ENGINE=InnoDB;
-
--- ────────────────────────────────────────────────────────────
--- 7. CONTACT_MESSAGES
+-- 4. CONTACT_MESSAGES
 -- ────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS contact_messages (
   id         INT          NOT NULL AUTO_INCREMENT,
@@ -133,18 +79,4 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   status     ENUM('new','read','archived') NOT NULL DEFAULT 'new',
   created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT pk_contacts PRIMARY KEY (id)
-) ENGINE=InnoDB;
-
--- ────────────────────────────────────────────────────────────
--- 8. APPOINTMENT_REMINDERS
--- ────────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS appointment_reminders (
-  id             INT       NOT NULL AUTO_INCREMENT,
-  appointment_id INT       NOT NULL,
-  reminder_type  ENUM('24h','1h') NOT NULL DEFAULT '24h',
-  send_at        DATETIME  NOT NULL,
-  sent_at        DATETIME  DEFAULT NULL,
-  status         ENUM('pending','sent','failed') NOT NULL DEFAULT 'pending',
-  CONSTRAINT pk_reminders      PRIMARY KEY (id),
-  CONSTRAINT fk_reminder_appt  FOREIGN KEY (appointment_id) REFERENCES appointments(id)
 ) ENGINE=InnoDB;

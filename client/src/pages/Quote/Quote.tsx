@@ -124,7 +124,7 @@ export default function Quote() {
             <div className={styles.successIcon}><CircleCheck size={32} strokeWidth={1.5} /></div>
             <h2 className={styles.successTitle}>Cotización generada</h2>
             <p className={styles.successSub}>
-              Solicitud <strong>{result.quote_code ?? `#${result.id}`}</strong> registrada exitosamente. Te hemos enviado un correo de confirmación.
+              Solicitud <strong>#{result.id}</strong> registrada exitosamente. Te hemos enviado un correo de confirmación.
             </p>
 
             <div className={styles.breakdown}>
@@ -151,12 +151,6 @@ export default function Quote() {
             <div className={styles.successActions}>
               <button
                 className={styles.btnPrimary}
-                onClick={() => navigate(`/agendar/${result.id}`)}
-              >
-                Agendar cita →
-              </button>
-              <button
-                className={styles.btnSecondary}
                 onClick={() => navigate('/mis-cotizaciones')}
               >
                 Ver mis cotizaciones
@@ -394,7 +388,7 @@ export default function Quote() {
 
             <div className={styles.notice}>
               <p>Esta cotización es <strong>aproximada</strong> y puede variar según la logística y necesidades específicas del proyecto.</p>
-              <p>Nuestro equipo se pondrá en contacto para afinar detalles una vez que agendes tu cita.</p>
+              <p>Nuestro equipo se pondrá en contacto contigo para afinar los detalles.</p>
             </div>
 
             {error && <div className={styles.errorBox}>{error}</div>}

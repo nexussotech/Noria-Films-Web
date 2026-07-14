@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import { CalendarCheck } from 'lucide-react'
 import { useQuotes } from '../../hooks/useQuotes'
 import BackHeader from '../../components/layout/BackHeader/BackHeader'
 import styles from './MyQuotes.module.css'
@@ -7,18 +6,15 @@ import styles from './MyQuotes.module.css'
 const STATUS_LABEL: Record<string, string> = {
   draft:     'Borrador',
   generated: 'Generada',
-  scheduled: 'Con cita agendada',
   cancelled: 'Cancelada',
 }
 const STATUS_CSS: Record<string, string> = {
   draft:     styles.draft,
   generated: styles.generated,
-  scheduled: styles.scheduled,
   cancelled: styles.cancelled,
 }
 const CARD_STATUS_CSS: Record<string, string> = {
   generated: styles.statusGenerated,
-  scheduled: styles.statusScheduled,
   cancelled: styles.statusCancelled,
 }
 
@@ -111,7 +107,6 @@ export default function MyQuotes() {
                     <div>
                       <h3 className={styles.cardTitle}>{q.service_name}</h3>
                       <p className={styles.cardMeta}>
-                        {q.quote_code && <><strong style={{ color: 'var(--red-light)', letterSpacing: '.04em' }}>{q.quote_code}</strong>{' · '}</>}
                         {q.shooting_duration ? (DURATION_LABEL[q.shooting_duration] ?? q.shooting_duration) : '—'}
                         {' · '}
                         {q.needs_drone ? 'Con dron' : 'Sin dron'}
@@ -156,24 +151,6 @@ export default function MyQuotes() {
                     <span className={styles.bValue}>{fmtMXN(q.extras_cost)}</span>
                   </div>
                 </div>
-
-                {/* Actions */}
-                {(q.status === 'generated' || q.status === 'scheduled') && (
-                  <div className={styles.cardActions}>
-                    {q.status === 'generated' && (
-                      <button
-                        className={styles.agendarBtn}
-                        onClick={() => navigate(`/agendar/${q.id}`)}
-                      >
-                        <CalendarCheck size={13} strokeWidth={2} style={{ marginRight: '5px', verticalAlign: 'middle' }} />
-                        Agendar cita
-                      </button>
-                    )}
-                    {q.status === 'scheduled' && (
-                      <span className={styles.scheduledBadge}>Cita agendada</span>
-                    )}
-                  </div>
-                )}
               </div>
             ))}
           </div>

@@ -53,18 +53,3 @@ INSERT INTO services (name, description, base_price, icon, image_url, active) VA
  'Desarrollo completo de proyectos cinematográficos de corta duración: guión, casting, rodaje y postproducción.',
  25000.00, 'CT',
  'https://images.unsplash.com/photo-1625690303837-654c9666d2d0?w=600&q=80', 1);
-
--- ── Slots de disponibilidad (admin id=1)
-INSERT INTO availability_slots (date, start_time, end_time, is_available, created_by_admin_id) VALUES
-(DATE_ADD(CURDATE(), INTERVAL 1 DAY), '10:00:00', '11:00:00', 1, 1),
-(DATE_ADD(CURDATE(), INTERVAL 1 DAY), '12:00:00', '13:00:00', 1, 1),
-(DATE_ADD(CURDATE(), INTERVAL 1 DAY), '15:00:00', '16:00:00', 1, 1),
-(DATE_ADD(CURDATE(), INTERVAL 2 DAY), '10:00:00', '11:00:00', 1, 1),
-(DATE_ADD(CURDATE(), INTERVAL 2 DAY), '14:00:00', '15:00:00', 1, 1),
-(DATE_ADD(CURDATE(), INTERVAL 3 DAY), '11:00:00', '12:00:00', 1, 1),
-(DATE_ADD(CURDATE(), INTERVAL 3 DAY), '16:00:00', '17:00:00', 1, 1),
-(DATE_ADD(CURDATE(), INTERVAL 5 DAY), '10:00:00', '11:00:00', 1, 1),
-(DATE_ADD(CURDATE(), INTERVAL 5 DAY), '14:00:00', '15:00:00', 1, 1),
-(DATE_ADD(CURDATE(), INTERVAL 7 DAY), '10:00:00', '11:00:00', 1, 1),
-(DATE_ADD(CURDATE(), INTERVAL 7 DAY), '12:00:00', '13:00:00', 1, 1),
-(DATE_ADD(CURDATE(), INTERVAL 7 DAY), '15:00:00', '16:00:00', 1, 1);

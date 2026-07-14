@@ -38,11 +38,10 @@ export default function Dashboard() {
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart
                   data={[
-                    { name: 'Registrados',    value: stats.total_users,            fill: '#F3F3F1' },
-                    { name: 'Con cotización', value: stats.users_with_quotes,      fill: '#7ab4e8' },
-                    { name: 'Con cita',       value: stats.users_with_appointments,fill: '#5dc98a' },
-                    { name: 'Pendientes',     value: stats.pending_quotes,         fill: '#d4a840' },
-                    { name: 'Mensajes',       value: stats.new_messages,           fill: '#A73436' },
+                    { name: 'Registrados',    value: stats.total_users,       fill: '#F3F3F1' },
+                    { name: 'Con cotización', value: stats.users_with_quotes, fill: '#7ab4e8' },
+                    { name: 'Pendientes',     value: stats.pending_quotes,    fill: '#d4a840' },
+                    { name: 'Mensajes',       value: stats.new_messages,      fill: '#A73436' },
                   ]}
                   margin={{ top: 8, right: 16, left: -16, bottom: 0 }}
                 >
@@ -56,35 +55,25 @@ export default function Dashboard() {
                   />
                   <Bar dataKey="value" radius={[3, 3, 0, 0]} name="Total">
                     {[
-                      '#F3F3F1', '#7ab4e8', '#5dc98a', '#d4a840', '#A73436',
+                      '#F3F3F1', '#7ab4e8', '#d4a840', '#A73436',
                     ].map((color, i) => <Cell key={i} fill={color} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <div className={styles.grid4}>
-              <StatCard label="Usuarios registrados"  value={stats.total_users}            accent="cream"  onClick={() => navigate('/usuarios')} />
-              <StatCard label="Total cotizaciones"     value={stats.total_quotes}            accent="blue"   onClick={() => navigate('/cotizaciones')} />
-              <StatCard label="Usuarios con cita"      value={stats.users_with_appointments} accent="green"  onClick={() => navigate('/citas')} />
-              <StatCard label="Tasa de conversión"     value={`${stats.conversion_rate}%`}   accent="red"   />
+            <div className={styles.grid3}>
+              <StatCard label="Usuarios registrados"  value={stats.total_users}          accent="cream"  onClick={() => navigate('/usuarios')} />
+              <StatCard label="Total cotizaciones"     value={stats.total_quotes}          accent="blue"   onClick={() => navigate('/cotizaciones')} />
+              <StatCard label="Tasa de conversión"     value={`${stats.conversion_rate}%`} accent="red"   />
             </div>
           </section>
 
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Atención pendiente</h2>
             <div className={styles.grid3}>
-              <StatCard label="Cotizaciones sin agendar" value={stats.pending_quotes}       accent="yellow" onClick={() => navigate('/cotizaciones')} />
-              <StatCard label="Citas pendientes"          value={stats.pending_appointments} accent="yellow" onClick={() => navigate('/citas')} />
-              <StatCard label="Mensajes nuevos"           value={stats.new_messages}          accent="red"   onClick={() => navigate('/mensajes')} />
-            </div>
-          </section>
-
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>Hoy</h2>
-            <div className={styles.grid3}>
-              <StatCard label="Citas programadas hoy" value={stats.today_appointments} accent="cream" onClick={() => navigate('/citas')} />
-              <StatCard label="Usuarios con cotización" value={stats.users_with_quotes} accent="blue" />
-              <StatCard label="Total usuarios activos"  value={stats.total_users}       accent="cream" />
+              <StatCard label="Cotizaciones sin revisar" value={stats.pending_quotes}     accent="yellow" onClick={() => navigate('/cotizaciones')} />
+              <StatCard label="Mensajes nuevos"           value={stats.new_messages}       accent="red"    onClick={() => navigate('/mensajes')} />
+              <StatCard label="Usuarios con cotización"   value={stats.users_with_quotes}  accent="blue" />
             </div>
           </section>
         </>

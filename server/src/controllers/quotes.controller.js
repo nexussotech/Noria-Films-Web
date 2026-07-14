@@ -133,7 +133,7 @@ exports.listAll = async (req, res) => {
 // ── PATCH /api/quotes/:id/status — admin ─────────────────────
 exports.updateStatus = async (req, res) => {
   try {
-    const allowed = ['draft', 'generated', 'scheduled', 'cancelled']
+    const allowed = ['draft', 'generated', 'cancelled']
     const { status } = req.body
     if (!allowed.includes(status)) return R.badRequest(res, 'Estado inválido')
     await db.query('UPDATE quotes SET status=? WHERE id=?', [status, req.params.id])

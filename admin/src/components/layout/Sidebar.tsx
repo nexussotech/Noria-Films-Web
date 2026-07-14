@@ -7,8 +7,6 @@ const NAV = [
   { to: '/usuarios',      label: 'Usuarios',        icon: '◎' },
   { to: '/servicios',     label: 'Servicios',       icon: '◈' },
   { to: '/cotizaciones',  label: 'Cotizaciones',    icon: '◻' },
-  { to: '/citas',         label: 'Citas',           icon: '◷' },
-  { to: '/disponibilidad',label: 'Disponibilidad',  icon: '◫' },
   { to: '/mensajes',      label: 'Mensajes',        icon: '◌' },
 ]
 

@@ -4,15 +4,14 @@ import api from '../../lib/api'
 import type { QuoteRow } from '../../types'
 import styles from './Quotes.module.css'
 
-type StatusFilter = 'all' | 'generated' | 'scheduled' | 'cancelled' | 'draft'
+type StatusFilter = 'all' | 'generated' | 'cancelled' | 'draft'
 
 const STATUS_LABEL: Record<string, string> = {
-  draft: 'Borrador', generated: 'Sin agendar', scheduled: 'Con cita', cancelled: 'Cancelada',
+  draft: 'Borrador', generated: 'Generada', cancelled: 'Cancelada',
 }
 const STATUS_TABS: { key: StatusFilter; label: string }[] = [
   { key: 'all',       label: 'Todas' },
-  { key: 'generated', label: 'Sin agendar' },
-  { key: 'scheduled', label: 'Con cita' },
+  { key: 'generated', label: 'Generadas' },
   { key: 'cancelled', label: 'Canceladas' },
   { key: 'draft',     label: 'Borrador' },
 ]
@@ -83,7 +82,7 @@ export default function Quotes() {
           <table className="tbl">
             <thead>
               <tr>
-                <th>Código</th>
+                <th>#</th>
                 <th>Usuario</th>
                 <th>Servicio</th>
                 <th>Duración</th>
@@ -102,10 +101,7 @@ export default function Quotes() {
                 <Fragment key={q.id}>
                   <tr className={styles.row} onClick={() => setExpanded(expanded === q.id ? null : q.id)}>
                     <td className={styles.idCell}>
-                      {q.quote_code
-                        ? <span style={{ fontFamily: 'monospace', fontSize: '.78rem', color: 'var(--red-light)', letterSpacing: '.04em' }}>{q.quote_code}</span>
-                        : <span style={{ color: 'var(--gray)' }}>#{q.id}</span>
-                      }
+                      <span style={{ color: 'var(--gray)' }}>#{q.id}</span>
                     </td>
                     <td>
                       <div className={styles.nameStack}>
@@ -145,8 +141,7 @@ export default function Quotes() {
                                 onChange={(e) => void changeStatus(q.id, e.target.value)}
                               >
                                 <option value="draft">Borrador</option>
-                                <option value="generated">Sin agendar</option>
-                                <option value="scheduled">Con cita</option>
+                                <option value="generated">Generada</option>
                                 <option value="cancelled">Cancelada</option>
                               </select>
                             </div>

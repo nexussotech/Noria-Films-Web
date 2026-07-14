@@ -64,51 +64,7 @@ Remitente siempre: `"NORIA Creative Film Studio" <MAIL_USER>`
 
 ---
 
-### 4. Confirmación de cita — al usuario
-
-| Campo | Valor |
-|-------|-------|
-| Destinatario | Usuario que agendó la cita |
-| Trigger | `POST /api/appointments` exitoso |
-| Template | `t.appointmentBooked(name, date, start, end, type, service, price, phone, notes)` |
-| Variables | Nombre, fecha larga, hora inicio, hora fin, modalidad (virtual/presencial), servicio, precio estimado, teléfono, notas opcionales |
-| Asunto | `Cita agendada — {date}` |
-
-**Contenido:** Tabla con servicio, fecha, hora, modalidad, precio estimado y teléfono. Aviso de recordatorio 24h.
-
----
-
-### 5. Notificación de cita — al administrador
-
-| Campo | Valor |
-|-------|-------|
-| Destinatario | `CLIENT_EMAIL_TO` |
-| Trigger | `POST /api/appointments` exitoso, si `CLIENT_EMAIL_TO` está configurado |
-| Template | `t.appointmentNotifyAdmin(name, email, date, start, type, service, price, phone, notes)` |
-| Variables | Nombre, email, fecha, hora inicio, modalidad, servicio, precio, teléfono, notas |
-| Asunto | `Nueva cita agendada — {name}` |
-
-**Contenido:** Datos completos del cliente y la cita para que el estudio pueda prepararse.
-
----
-
-### 6. Recordatorio automático 24h antes de la cita
-
-| Campo | Valor |
-|-------|-------|
-| Destinatario | Usuario con cita pendiente |
-| Trigger | `node-cron` cada 10 minutos — procesa `appointment_reminders` donde `status='pending'` y `send_at <= NOW()` |
-| Template | `t.appointmentReminder(name, date, start, type, service)` |
-| Variables | Nombre, fecha larga, hora inicio, modalidad, nombre del servicio |
-| Asunto | `Recordatorio de cita — {date}` |
-
-**Contenido:** Resumen de la cita con servicio, fecha, hora y modalidad. Invitación a contactar si necesita cancelar.
-
-**Nota:** Los recordatorios con `status='pending'` se actualizan a `status='failed'` cuando la cita es cancelada por el admin, evitando envíos innecesarios.
-
----
-
-### 7. Acuse de contacto — al remitente
+### 4. Acuse de contacto — al remitente
 
 | Campo | Valor |
 |-------|-------|
@@ -122,7 +78,7 @@ Remitente siempre: `"NORIA Creative Film Studio" <MAIL_USER>`
 
 ---
 
-### 8.5 Respuesta del admin a mensaje de contacto
+### 5. Respuesta del admin a mensaje de contacto
 
 | Campo | Valor |
 |-------|-------|
@@ -136,7 +92,7 @@ Remitente siempre: `"NORIA Creative Film Studio" <MAIL_USER>`
 
 ---
 
-### 8. Notificación de contacto — al administrador
+### 6. Notificación de contacto — al administrador
 
 | Campo | Valor |
 |-------|-------|

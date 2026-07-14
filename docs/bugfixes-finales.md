@@ -2,6 +2,8 @@
 
 > Registro de errores encontrados durante la fase de QA, su causa raíz y la solución aplicada.
 
+> **Nota:** varias entradas de este registro histórico referencian el sistema de agendamiento de citas (`appointments`, `availability_slots`, `reminder.cron.js`, `client/src/pages/Schedule`). Ese módulo fue eliminado del proyecto (ver `migration_v5.sql`); se conserva el registro tal como se documentó en su momento.
+
 ---
 
 ## Bugs críticos

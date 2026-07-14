@@ -15,8 +15,9 @@ router.get('/', (req, res, next) => {
 
 const adminMiddleware = [auth, authorizeRoles('admin')]
 const serviceValidation = [
-  body('name').trim().notEmpty().withMessage('Nombre requerido'),
-  body('description').trim().notEmpty().withMessage('Descripción requerida'),
+  body('name').trim().notEmpty().withMessage('Nombre requerido').isLength({ max: 120 }).withMessage('Nombre muy largo'),
+  body('description').trim().notEmpty().withMessage('Descripción requerida').isLength({ max: 500 }).withMessage('Descripción muy larga'),
+  body('base_price').isFloat({ min: 1 }).withMessage('El precio base debe ser mayor a 0'),
   validate,
 ]
 

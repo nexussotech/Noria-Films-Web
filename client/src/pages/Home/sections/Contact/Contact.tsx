@@ -16,6 +16,7 @@ const INITIAL: FormState = { name: '', email: '', phone: '', subject: '', messag
 export default function Contact() {
   const [form, setForm]         = useState<FormState>(INITIAL)
   const [status, setStatus]     = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [errorMsg, setErrorMsg] = useState('')
   const ref = useReveal(0.08)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -25,6 +26,7 @@ export default function Contact() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setStatus('loading')
+    setErrorMsg('')
     try {
       await api.post('/contact', {
         full_name: form.name,
@@ -36,7 +38,10 @@ export default function Contact() {
       setStatus('success')
       setForm(INITIAL)
       setTimeout(() => setStatus('idle'), 4000)
-    } catch {
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { errors?: { msg: string }[] } } })
+        ?.response?.data?.errors?.[0]?.msg
+      setErrorMsg(msg ?? 'Ocurrió un error al enviar el mensaje. Intenta de nuevo.')
       setStatus('error')
     }
   }
@@ -87,7 +92,7 @@ export default function Contact() {
             )}
             {status === 'error' && (
               <div className={styles.error}>
-                Ocurrió un error al enviar el mensaje. Intenta de nuevo.
+                {errorMsg}
               </div>
             )}
 

@@ -99,7 +99,7 @@ const t = {
       ${heading(`Bienvenido, ${name}`)}
       ${subtext('Tu cuenta ha sido creada exitosamente en NORIA Creative Film Studio.')}
       <p style="color:#F3F3F1;font-size:14px;line-height:1.7;margin:0 0 16px">
-        Ya puedes iniciar sesión para explorar nuestros servicios de producción audiovisual, generar cotizaciones y agendar citas con nuestro equipo.
+        Ya puedes iniciar sesión para explorar nuestros servicios de producción audiovisual y generar cotizaciones.
       </p>
       ${notice('Si no solicitaste esta cuenta, puedes ignorar este correo de forma segura.')}
     `),
@@ -133,58 +133,6 @@ const t = {
         ['Servicio', service],
       ])}
       <p style="color:#8b8fa8;font-size:13px;margin:16px 0 0">Accede al panel de administración para revisar el detalle completo.</p>
-    `),
-  }),
-
-  appointmentBooked: (name, date, start, end, type, service, price, phone, notes) => ({
-    subject: `Cita agendada — ${date}`,
-    html: layout('Cita agendada', `
-      ${heading('Cita agendada exitosamente')}
-      ${subtext(`Estimado/a ${name}, tu cita ha sido registrada en nuestro sistema.`)}
-      ${dataTable([
-        ['Servicio', service || '—'],
-        ['Fecha', date],
-        ['Hora', `${start} – ${end}`],
-        ['Modalidad', type === 'virtual' ? 'Virtual (videollamada)' : 'Presencial (estudio)'],
-        ['Total estimado', price ? `$${Number(price).toLocaleString('es-MX')} MXN` : '—'],
-        ['Teléfono de contacto', phone || '—'],
-        ...(notes ? [['Notas', notes]] : []),
-      ])}
-      ${notice('Te enviaremos un recordatorio 24 horas antes de tu cita. Si necesitas cancelar o reagendar, comunícate con nosotros con anticipación.')}
-    `),
-  }),
-
-  appointmentNotifyAdmin: (name, email, date, start, type, service, price, phone, notes) => ({
-    subject: `Nueva cita agendada — ${name}`,
-    html: layout('Nueva cita', `
-      ${heading('Nueva cita agendada')}
-      ${subtext('Un usuario ha agendado una cita a través del sistema.')}
-      ${dataTable([
-        ['Usuario', name],
-        ['Correo', email],
-        ['Teléfono', phone || '—'],
-        ['Servicio', service || '—'],
-        ['Fecha', date],
-        ['Hora', start],
-        ['Modalidad', type === 'virtual' ? 'Virtual' : 'Presencial'],
-        ['Total estimado', price ? `$${Number(price).toLocaleString('es-MX')} MXN` : '—'],
-        ...(notes ? [['Notas', notes]] : []),
-      ])}
-    `),
-  }),
-
-  appointmentReminder: (name, date, start, type, service) => ({
-    subject: `Recordatorio de cita — ${date}`,
-    html: layout('Recordatorio de cita', `
-      ${heading('Recordatorio de cita')}
-      ${subtext(`Estimado/a ${name}, le recordamos que tiene una cita programada.`)}
-      ${dataTable([
-        ['Servicio', service || '—'],
-        ['Fecha', date],
-        ['Hora', start],
-        ['Modalidad', type === 'virtual' ? 'Virtual (videollamada)' : 'Presencial (estudio)'],
-      ])}
-      ${notice('Si necesita cancelar o modificar su cita, comuníquese con nosotros a la brevedad posible.')}
     `),
   }),
 

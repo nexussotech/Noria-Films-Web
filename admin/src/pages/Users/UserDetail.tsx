@@ -13,10 +13,7 @@ function fmtDate(iso: string) {
 }
 
 const QUOTE_STATUS: Record<string, string> = {
-  draft: 'Borrador', generated: 'Generada', scheduled: 'Con cita', cancelled: 'Cancelada',
-}
-const APPT_STATUS: Record<string, string> = {
-  pending: 'Pendiente', confirmed: 'Confirmada', cancelled: 'Cancelada', completed: 'Completada',
+  draft: 'Borrador', generated: 'Generada', cancelled: 'Cancelada',
 }
 
 export default function UserDetail() {
@@ -53,7 +50,7 @@ export default function UserDetail() {
   if (error)   return <div className="admin-page"><p className="msg-error">{error}</p><button className="btn-sm btn-ghost" onClick={() => navigate('/usuarios')}>← Volver</button></div>
   if (!data)   return null
 
-  const { user, quotes, appointments } = data
+  const { user, quotes } = data
 
   return (
     <div className="admin-page">
@@ -103,37 +100,6 @@ export default function UserDetail() {
                     <td style={{ fontWeight: 600 }}>{fmtMXN(q.estimated_price)}</td>
                     <td><span className={`badge bd-${q.status}`}>{QUOTE_STATUS[q.status] ?? q.status}</span></td>
                     <td style={{ color: 'var(--gray)', fontSize: '.8rem' }}>{fmtDate(q.created_at)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-
-      {/* Appointments */}
-      <section className={styles.section}>
-        <h2 className="section-title">Citas <span className="count-chip">{appointments.length}</span></h2>
-        {appointments.length === 0 ? (
-          <div className="empty-state">Sin citas agendadas</div>
-        ) : (
-          <div className="tbl-wrap">
-            <table className="tbl">
-              <thead>
-                <tr>
-                  <th>#</th><th>Fecha</th><th>Hora</th><th>Modalidad</th><th>Estado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {appointments.map((a) => (
-                  <tr key={a.id}>
-                    <td style={{ color: 'var(--gray)', fontSize: '.78rem' }}>{a.id}</td>
-                    <td>{fmtDate(String(a.appointment_date).slice(0, 10))}</td>
-                    <td style={{ fontFamily: 'monospace', fontSize: '.82rem' }}>
-                      {String(a.start_time).slice(0, 5)} – {String(a.end_time).slice(0, 5)}
-                    </td>
-                    <td style={{ textTransform: 'capitalize' }}>{a.meeting_type}</td>
-                    <td><span className={`badge bd-${a.status}`}>{APPT_STATUS[a.status] ?? a.status}</span></td>
                   </tr>
                 ))}
               </tbody>

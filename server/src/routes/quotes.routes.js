@@ -25,10 +25,12 @@ router.post('/',
   body('shooting_duration')
     .isIn(VALID_SHOOTING_DURATIONS)
     .withMessage(`Duración inválida. Opciones: ${VALID_SHOOTING_DURATIONS.join(', ')}`),
-  body('needs_drone').isBoolean().withMessage('needs_drone debe ser true o false'),
+  body('needs_drone').isBoolean({ strict: true }).withMessage('needs_drone debe ser true o false'),
   body('delivery_time')
     .isIn(VALID_DELIVERY_TIMES)
     .withMessage(`Entrega inválida. Opciones: ${VALID_DELIVERY_TIMES.join(', ')}`),
+  body('project_type').optional({ values: 'falsy' }).trim().isLength({ max: 120 }).withMessage('Tipo de proyecto muy largo'),
+  body('extra_notes').optional({ values: 'falsy' }).trim().isLength({ max: 1000 }).withMessage('Notas muy largas (máx. 1000 caracteres)'),
   validate,
   ctrl.create
 )
@@ -39,7 +41,7 @@ router.get('/',     auth, authorizeRoles('admin'), ctrl.listAll)
 
 router.patch('/:id/status',
   auth, authorizeRoles('admin'),
-  body('status').isIn(['draft', 'generated', 'scheduled', 'cancelled']),
+  body('status').isIn(['draft', 'generated', 'cancelled']),
   validate,
   ctrl.updateStatus
 )

@@ -2,11 +2,8 @@ export interface DashboardStats {
   total_users: number
   total_quotes: number
   users_with_quotes: number
-  users_with_appointments: number
   conversion_rate: number
   pending_quotes: number
-  pending_appointments: number
-  today_appointments: number
   new_messages: number
 }
 
@@ -19,7 +16,6 @@ export interface AdminUser {
   status: 'active' | 'inactive'
   created_at: string
   quote_count: number
-  appointment_count: number
 }
 
 export interface UserDetailData {
@@ -33,12 +29,10 @@ export interface UserDetailData {
     created_at: string
   }
   quotes: QuoteRow[]
-  appointments: ApptRow[]
 }
 
 export interface QuoteRow {
   id: number
-  quote_code: string | null
   service?: string
   service_name?: string
   full_name?: string
@@ -49,39 +43,7 @@ export interface QuoteRow {
   needs_drone: number
   delivery_time: string | null
   estimated_price: string | null
-  status: 'draft' | 'generated' | 'scheduled' | 'cancelled'
-  created_at: string
-}
-
-export interface ApptRow {
-  id: number
-  quote_id: number
-  appointment_date: string
-  start_time: string
-  end_time: string
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed'
-  meeting_type: 'presencial' | 'virtual'
-  notes: string | null
-  created_at: string
-  full_name?: string
-  email?: string
-  service_name?: string
-  estimated_price?: string | null
-}
-
-export interface AvailSlot {
-  id: number
-  date: string
-  start_time: string
-  end_time: string
-  is_available: number
-  created_at: string
-}
-
-export interface BlockedDate {
-  id: number
-  date: string
-  reason: string | null
+  status: 'draft' | 'generated' | 'cancelled'
   created_at: string
 }
 

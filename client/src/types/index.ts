@@ -53,7 +53,6 @@ export interface AuthUser {
 /** Cotización tal como la devuelve el API */
 export interface QuoteItem {
   id: number
-  quote_code: string | null
   user_id: number
   service_id: number
   service_name: string
@@ -69,7 +68,7 @@ export interface QuoteItem {
   postproduction_cost: string
   extras_cost: string
   estimated_price: string | null
-  status: 'draft' | 'generated' | 'scheduled' | 'cancelled'
+  status: 'draft' | 'generated' | 'cancelled'
   created_at: string
   updated_at: string
 }
@@ -77,7 +76,6 @@ export interface QuoteItem {
 /** Respuesta del POST /api/quotes */
 export interface QuoteCreatedResponse {
   id: number
-  quote_code: string | null
   status: string
   service_name: string
   base_price: number
@@ -86,32 +84,6 @@ export interface QuoteCreatedResponse {
   postproduction_cost: number
   extras_cost: number
   estimated_price: number
-}
-
-export interface Appointment {
-  id: number
-  quote_id: number
-  service_name: string
-  project_type: string | null
-  appointment_date: string
-  start_time: string
-  end_time: string
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed'
-  meeting_type: 'presencial' | 'virtual'
-  created_at: string
-}
-
-export interface AvailabilitySlot {
-  id: number
-  date: string       // 'YYYY-MM-DD'
-  start_time: string // 'HH:MM:SS'
-  end_time: string   // 'HH:MM:SS'
-  is_available: number
-}
-
-export interface AppointmentCreatedResponse {
-  id: number
-  message: string
 }
 
 /** Configuración de precios del GET /api/quotes/pricing-config */

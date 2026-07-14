@@ -9,10 +9,10 @@
 # 1. Entrar a MySQL con tu usuario/password
 mysql -u root -p
 
-# 2. Ejecutar schema (crea la BD y las 8 tablas)
+# 2. Ejecutar schema (crea la BD y las 4 tablas)
 SOURCE /ruta/al/proyecto/noria-films/database/schema.sql;
 
-# 3. Ejecutar seed (admin + 7 servicios + 12 slots)
+# 3. Ejecutar seed (admin + 8 servicios)
 SOURCE /ruta/al/proyecto/noria-films/database/seed.sql;
 
 # 4. Verificar
@@ -48,8 +48,4 @@ DB_NAME=noria_films
 | `users` | Usuarios con soft-delete (status active/inactive) |
 | `services` | Catálogo de servicios gestionado por admin |
 | `quotes` | Cotizaciones de usuarios |
-| `appointments` | Citas agendadas |
-| `availability_slots` | Horarios habilitados por admin |
-| `blocked_dates` | Fechas bloqueadas |
 | `contact_messages` | Mensajes del formulario público |
-| `appointment_reminders` | Recordatorios automáticos (cron cada 10 min) |

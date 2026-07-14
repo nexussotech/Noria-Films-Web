@@ -1,6 +1,6 @@
 # NORIA Creative Film Studio
 
-Plataforma web para una empresa de producción audiovisual. Permite a visitantes conocer los servicios, a usuarios registrados cotizar y agendar citas, y a administradores gestionar todo desde un panel independiente.
+Plataforma web para una empresa de producción audiovisual. Permite a visitantes conocer los servicios, a usuarios registrados solicitar cotizaciones, y a administradores gestionar todo desde un panel independiente.
 
 > Proyecto escolar final · Stack: React 18 + TypeScript + Node.js + Express + MySQL
 
@@ -29,7 +29,6 @@ Plataforma web para una empresa de producción audiovisual. Permite a visitantes
 | jsonwebtoken | — | Autenticación JWT |
 | bcryptjs | — | Hash de contraseñas |
 | Nodemailer | — | Envío de correos |
-| node-cron | — | Recordatorios automáticos |
 | helmet | — | Headers de seguridad |
 | cors | — | Control de orígenes |
 | express-validator | — | Validación de inputs |
@@ -44,8 +43,8 @@ Plataforma web para una empresa de producción audiovisual. Permite a visitantes
 | Rol | Acceso | App |
 |-----|--------|-----|
 | **Visitante** | Landing, servicios, formulario de contacto | `client` |
-| **Usuario registrado** | Cotizar, ver historial, agendar citas | `client` |
-| **Administrador** | Panel completo: usuarios, cotizaciones, citas, servicios, mensajes, disponibilidad | `admin` |
+| **Usuario registrado** | Cotizar, ver historial de cotizaciones | `client` |
+| **Administrador** | Panel completo: usuarios, cotizaciones, servicios, mensajes | `admin` |
 
 ---
 
@@ -190,7 +189,6 @@ Ver documentación completa en [`docs/endpoints.md`](docs/endpoints.md)
 | Autenticación | `/api/auth` | Público / JWT |
 | Servicios | `/api/services` | Público (lectura) / Admin (escritura) |
 | Cotizaciones | `/api/quotes` | JWT user / Admin |
-| Citas | `/api/appointments` | JWT user / Admin |
 | Contacto | `/api/contact` | Público (POST) / Admin (GET) |
 | Admin | `/api/admin` | Admin |
 | Usuarios | `/api/users` | Admin |
@@ -221,14 +219,12 @@ Para la entrega académica, tomar capturas de:
 1. **Landing page** — sección hero y servicios
 2. **Formulario de cotización** — paso a paso con preview de precio
 3. **Mis cotizaciones** — con breakdown de costos
-4. **Agendamiento de cita** — selección de slot y confirmación
-5. **Panel admin — Dashboard** — métricas + gráfica de embudo
-6. **Panel admin — Usuarios** — tabla con filtros
-7. **Panel admin — Cotizaciones** — tabla expandible con cambio de estado
-8. **Panel admin — Disponibilidad** — crear slots y bloquear fechas
-9. **Panel admin — Mensajes** — con búsqueda y expandido
-10. **Consola servidor** — `[EMAIL SIMULADO]` o email enviado real
-11. **MySQL Workbench / consola** — tablas con datos de prueba
+4. **Panel admin — Dashboard** — métricas + gráfica de embudo
+5. **Panel admin — Usuarios** — tabla con filtros
+6. **Panel admin — Cotizaciones** — tabla expandible con cambio de estado
+7. **Panel admin — Mensajes** — con búsqueda y expandido
+8. **Consola servidor** — `[EMAIL SIMULADO]` o email enviado real
+9. **MySQL Workbench / consola** — tablas con datos de prueba
 
 ---
 
@@ -268,7 +264,7 @@ noria-films/
 │       ├── controllers/
 │       ├── middlewares/   # authenticateToken, authorizeRoles, validate
 │       ├── routes/
-│       ├── services/      # email.service, reminder.cron
+│       ├── services/      # email.service
 │       └── utils/
 ├── database/
 │   ├── schema.sql         # Definición de tablas

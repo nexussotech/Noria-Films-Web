@@ -4,7 +4,7 @@ import api from '../../lib/api'
 import type { AdminUser } from '../../types'
 import styles from './Users.module.css'
 
-type FilterMode = 'all' | 'quoted' | 'appointed'
+type FilterMode = 'all' | 'quoted'
 
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -24,8 +24,7 @@ export default function Users() {
     try {
       const params: Record<string, string> = {}
       if (search) params.search = search
-      if (filter === 'quoted')    { params.hasQuote = 'true' }
-      if (filter === 'appointed') { params.hasQuote = 'true'; params.hasAppointment = 'true' }
+      if (filter === 'quoted') { params.hasQuote = 'true' }
       const { data } = await api.get<AdminUser[]>('/users', { params })
       setUsers(data)
     } catch {
@@ -38,9 +37,8 @@ export default function Users() {
   useEffect(() => { void load() }, [load])
 
   const FILTERS: { key: FilterMode; label: string }[] = [
-    { key: 'all',       label: 'Todos' },
-    { key: 'quoted',    label: 'Con cotización' },
-    { key: 'appointed', label: 'Con cotización + cita' },
+    { key: 'all',    label: 'Todos' },
+    { key: 'quoted', label: 'Con cotización' },
   ]
 
   return (
@@ -86,7 +84,6 @@ export default function Users() {
                 <th>Nombre / Correo</th>
                 <th>Teléfono</th>
                 <th>Cotizaciones</th>
-                <th>Citas</th>
                 <th>Estado</th>
                 <th>Registrado</th>
                 <th></th>
@@ -94,7 +91,7 @@ export default function Users() {
             </thead>
             <tbody>
               {users.length === 0 ? (
-                <tr><td colSpan={8} className="empty-state">No hay usuarios con ese criterio</td></tr>
+                <tr><td colSpan={7} className="empty-state">No hay usuarios con ese criterio</td></tr>
               ) : users.map((u) => (
                 <tr key={u.id} className={styles.row} onClick={() => navigate(`/usuarios/${u.id}`)}>
                   <td className={styles.idCell}>{u.id}</td>
@@ -111,11 +108,6 @@ export default function Users() {
                   <td>
                     <span className={`badge ${u.quote_count > 0 ? 'bd-scheduled' : 'bd-read'}`}>
                       {u.quote_count}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`badge ${u.appointment_count > 0 ? 'bd-confirmed' : 'bd-read'}`}>
-                      {u.appointment_count}
                     </span>
                   </td>
                   <td>

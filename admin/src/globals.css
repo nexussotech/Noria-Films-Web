@@ -37,9 +37,7 @@ select, input, textarea { font-family: var(--font); }
 .bd-generated { background: rgba(100,160,220,.15); color: #7ab4e8; }
 .bd-scheduled { background: rgba(90,158,111,.15);  color: #5dc98a; }
 .bd-cancelled { background: rgba(167,52,54,.15);   color: #c04a4d; }
-.bd-pending   { background: rgba(220,180,50,.15);  color: #d4a840; }
 .bd-confirmed { background: rgba(90,158,111,.15);  color: #5dc98a; }
-.bd-completed { background: rgba(130,130,255,.15); color: #9898ee; }
 .bd-active    { background: rgba(90,158,111,.12);  color: #5dc98a; }
 .bd-inactive  { background: rgba(167,52,54,.12);   color: #c04a4d; }
 .bd-new       { background: rgba(167,52,54,.15);   color: #c04a4d; }

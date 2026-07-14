@@ -4,14 +4,12 @@ const R  = require('../utils/response')
 // GET /api/users — lista con embudo comercial
 exports.list = async (req, res) => {
   try {
-    const { search, hasQuote, hasAppointment } = req.query
+    const { search, hasQuote } = req.query
     let sql = `
       SELECT u.id, u.full_name, u.email, u.phone, u.role, u.status, u.created_at,
-             COUNT(DISTINCT q.id) AS quote_count,
-             COUNT(DISTINCT a.id) AS appointment_count
+             COUNT(DISTINCT q.id) AS quote_count
       FROM users u
-      LEFT JOIN quotes q       ON q.user_id = u.id
-      LEFT JOIN appointments a ON a.user_id = u.id
+      LEFT JOIN quotes q ON q.user_id = u.id
       WHERE u.role = 'user'`
     const params = []
 
@@ -20,10 +18,7 @@ exports.list = async (req, res) => {
       params.push(`%${search}%`, `%${search}%`)
     }
     sql += ' GROUP BY u.id'
-    const having = []
-    if (hasQuote === 'true')       having.push('quote_count > 0')
-    if (hasAppointment === 'true') having.push('appointment_count > 0')
-    if (having.length) sql += ' HAVING ' + having.join(' AND ')
+    if (hasQuote === 'true') sql += ' HAVING quote_count > 0'
     sql += ' ORDER BY u.created_at DESC'
 
     const [rows] = await db.query(sql, params)
@@ -45,11 +40,7 @@ exports.getOne = async (req, res) => {
        FROM quotes q JOIN services s ON s.id=q.service_id
        WHERE q.user_id=? ORDER BY q.created_at DESC`, [id]
     )
-    const [appointments] = await db.query(
-      `SELECT a.id, a.appointment_date, a.start_time, a.end_time, a.status, a.meeting_type
-       FROM appointments a WHERE a.user_id=? ORDER BY a.appointment_date DESC`, [id]
-    )
-    return R.ok(res, { user: users[0], quotes, appointments })
+    return R.ok(res, { user: users[0], quotes })
   } catch (err) { return R.serverError(res, err) }
 }
 
