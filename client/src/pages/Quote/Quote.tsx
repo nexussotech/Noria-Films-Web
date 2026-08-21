@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Check, CircleCheck } from 'lucide-react'
 import api from '../../lib/api'
+import { useAuth } from '../../context/AuthContext'
+import { openWhatsAppAdmin } from '../../lib/whatsapp'
 import BackHeader from '../../components/layout/BackHeader/BackHeader'
 import type { ApiService, PricingConfig, QuoteCreatedResponse } from '../../types'
 import styles from './Quote.module.css'
@@ -70,6 +72,7 @@ export default function Quote() {
   const [result,     setResult]    = useState<QuoteCreatedResponse | null>(null)
 
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   useEffect(() => {
     Promise.all([
@@ -113,6 +116,21 @@ export default function Quote() {
     }
   }
 
+  const sendQuoteWhatsApp = () => {
+    if (!result) return
+    openWhatsAppAdmin(
+      `Nueva cotización — NORIA Films\n` +
+      `Cliente: ${user?.full_name ?? '—'} (${user?.email ?? '—'})\n` +
+      `Servicio: ${result.service_name}\n` +
+      `Duración de rodaje: ${SHOOTING_OPTIONS.find((o) => o.key === form.shooting_duration)?.label ?? '—'}\n` +
+      `Dron: ${form.needs_drone ? 'Sí' : 'No'}\n` +
+      `Entrega: ${DELIVERY_OPTIONS.find((o) => o.key === form.delivery_time)?.label ?? '—'}\n` +
+      `Notas: ${form.extra_notes || '—'}\n` +
+      `Total estimado: ${fmtMXN(result.estimated_price)} MXN\n` +
+      `Cotización #${result.id}`
+    )
+  }
+
   // ── Pantalla de éxito ───────────────────────────────────────
   if (result) {
     return (
@@ -124,7 +142,7 @@ export default function Quote() {
             <div className={styles.successIcon}><CircleCheck size={32} strokeWidth={1.5} /></div>
             <h2 className={styles.successTitle}>Cotización generada</h2>
             <p className={styles.successSub}>
-              Solicitud <strong>#{result.id}</strong> registrada exitosamente. Te hemos enviado un correo de confirmación.
+              Solicitud <strong>#{result.id}</strong> registrada exitosamente.
             </p>
 
             <div className={styles.breakdown}>
@@ -151,6 +169,12 @@ export default function Quote() {
             <div className={styles.successActions}>
               <button
                 className={styles.btnPrimary}
+                onClick={sendQuoteWhatsApp}
+              >
+                Enviar por WhatsApp
+              </button>
+              <button
+                className={styles.btnSecondary}
                 onClick={() => navigate('/mis-cotizaciones')}
               >
                 Ver mis cotizaciones

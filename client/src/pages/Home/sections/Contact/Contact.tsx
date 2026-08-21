@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useReveal } from '../../../../hooks/useReveal'
 import api from '../../../../lib/api'
+import { openWhatsAppAdmin } from '../../../../lib/whatsapp'
 import styles from './Contact.module.css'
 
 interface FormState {
@@ -31,10 +32,18 @@ export default function Contact() {
       await api.post('/contact', {
         full_name: form.name,
         email:     form.email,
-        phone:     form.phone || undefined,
+        phone:     form.phone,
         subject:   form.subject,
         message:   form.message,
       })
+      openWhatsAppAdmin(
+        `Nuevo mensaje de contacto — NORIA Films\n` +
+        `Nombre: ${form.name}\n` +
+        `Email: ${form.email}\n` +
+        `Teléfono: ${form.phone}\n` +
+        `Asunto: ${form.subject}\n` +
+        `Mensaje: ${form.message}`
+      )
       setStatus('success')
       setForm(INITIAL)
       setTimeout(() => setStatus('idle'), 4000)
@@ -87,7 +96,7 @@ export default function Contact() {
           <div className={`reveal-right`}>
             {status === 'success' && (
               <div className={styles.success}>
-                Mensaje enviado con éxito. Te contactaremos pronto.
+                Mensaje registrado. Se abrió WhatsApp con tu mensaje listo para enviar — confírmalo desde ahí.
               </div>
             )}
             {status === 'error' && (
@@ -101,7 +110,7 @@ export default function Contact() {
                 [
                   { name: 'name',    label: 'Nombre',   type: 'text',  placeholder: 'Tu nombre completo',       required: true },
                   { name: 'email',   label: 'Email',    type: 'email', placeholder: 'tu@email.com',             required: true },
-                  { name: 'phone',   label: 'Teléfono', type: 'tel',   placeholder: '+52 (449) 000-0000',       required: false },
+                  { name: 'phone',   label: 'Teléfono', type: 'tel',   placeholder: '+52 (449) 000-0000',       required: true },
                   { name: 'subject', label: 'Asunto',   type: 'text',  placeholder: '¿En qué podemos ayudarte?',required: true },
                 ] as const
               ).map((field) => (

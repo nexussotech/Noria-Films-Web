@@ -1,6 +1,4 @@
 const db            = require('../config/db')
-const { send, t }   = require('../services/email.service')
-const env           = require('../config/env')
 const R             = require('../utils/response')
 const {
   calcPrice,
@@ -52,10 +50,6 @@ exports.create = async (req, res) => {
       ]
     )
 
-    const [[user]] = await db.query('SELECT full_name, email FROM users WHERE id=?', [userId])
-    send({ to: user.email, ...t.quoteCreated(user.full_name, svc.name, { base_price: svc.base_price, ...breakdown }) }).catch((e) => console.error('[MAIL quote-user]', e.message))
-    if (env.CLIENT_EMAIL_TO) send({ to: env.CLIENT_EMAIL_TO, ...t.quoteNotifyAdmin(user.full_name, svc.name, user.email) }).catch((e) => console.error('[MAIL quote-admin]', e.message))
-
     return R.created(res, {
       id:         result.insertId,
       status:     'generated',
@@ -96,7 +90,7 @@ exports.getOne = async (req, res) => {
     const [rows] = await db.query(
       `SELECT q.*, s.name AS service_name, s.icon AS service_icon,
               s.base_price AS service_base_price,
-              u.full_name, u.email
+              u.full_name, u.email, u.phone
        FROM quotes q
        JOIN services s ON s.id = q.service_id
        JOIN users   u ON u.id  = q.user_id
@@ -115,7 +109,7 @@ exports.getOne = async (req, res) => {
 exports.listAll = async (req, res) => {
   try {
     const { status, user_id, service_id } = req.query
-    let sql = `SELECT q.*, s.name AS service_name, u.full_name, u.email
+    let sql = `SELECT q.*, s.name AS service_name, u.full_name, u.email, u.phone
                FROM quotes q
                JOIN services s ON s.id = q.service_id
                JOIN users   u  ON u.id = q.user_id

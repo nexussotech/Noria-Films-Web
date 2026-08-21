@@ -7,8 +7,11 @@ const R            = require('../utils/response')
 exports.register = async (req, res) => {
   try {
     const { full_name, email, password, phone } = req.body
-    const [existing] = await db.query('SELECT id FROM users WHERE email=?', [email])
-    if (existing.length) return R.conflict(res, 'El correo ya está registrado')
+    const [existingEmail] = await db.query('SELECT id FROM users WHERE email=?', [email])
+    if (existingEmail.length) return R.conflict(res, 'El correo ya está registrado')
+
+    const [existingPhone] = await db.query('SELECT id FROM users WHERE phone=?', [phone])
+    if (existingPhone.length) return R.conflict(res, 'El teléfono ya está registrado')
 
     const password_hash = await bcrypt.hash(password, 10)
     const [result] = await db.query(
@@ -59,6 +62,10 @@ exports.me = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const { full_name, phone } = req.body
+    if (phone) {
+      const [existingPhone] = await db.query('SELECT id FROM users WHERE phone=? AND id<>?', [phone, req.user.id])
+      if (existingPhone.length) return R.conflict(res, 'El teléfono ya está registrado')
+    }
     await db.query('UPDATE users SET full_name=?,phone=? WHERE id=?',
       [full_name, phone || null, req.user.id])
     return R.ok(res, { message: 'Perfil actualizado' })

@@ -228,6 +228,27 @@
 .bValue { font-size: .8rem; font-weight: 600; color: var(--cream); }
 .bDivider { width: 1px; height: 2rem; background: rgba(255,255,255,.06); flex-shrink: 0; }
 
+/* ── Card actions ── */
+.cardActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: .7rem 1.3rem;
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+.cardActions button {
+  background: none;
+  border: 1px solid rgba(255,255,255,.15);
+  color: var(--cream);
+  padding: .5rem 1rem;
+  border-radius: 2px;
+  font-size: .78rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .25s, color .25s;
+}
+.cardActions button:hover { border-color: var(--red-light); color: var(--red-light); }
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .page         { background-attachment: scroll; }

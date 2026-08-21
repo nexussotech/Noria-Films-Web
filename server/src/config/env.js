@@ -24,5 +24,4 @@ module.exports = {
   MAIL_PORT:      Number(process.env.MAIL_PORT || 587),
   MAIL_USER:      process.env.MAIL_USER      || '',
   MAIL_PASS:      process.env.MAIL_PASS      || '',
-  CLIENT_EMAIL_TO: process.env.CLIENT_EMAIL_TO || 'contacto@noriafilms.com',
 }

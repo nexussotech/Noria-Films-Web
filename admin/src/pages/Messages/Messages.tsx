@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef, type FormEvent } from 'react'
-import { Send, CheckCheck } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 import api from '../../lib/api'
+import { openWhatsApp } from '../../lib/whatsapp'
 import type { ContactMsg } from '../../types'
 import styles from './Messages.module.css'
 
@@ -32,11 +33,6 @@ export default function Messages() {
   const [error,     setError]     = useState('')
   const [filter,    setFilter]    = useState<StatusFilter>('all')
   const [expanded,  setExpanded]  = useState<number | null>(null)
-  const [replyId,   setReplyId]   = useState<number | null>(null)
-  const [replyText, setReplyText] = useState('')
-  const [replying,  setReplying]  = useState(false)
-  const [replyOk,   setReplyOk]   = useState<number | null>(null)
-  const [replyErr,  setReplyErr]  = useState('')
   const searchRef  = useRef<HTMLInputElement>(null)
   const [query,    setQuery]    = useState('')
 
@@ -63,22 +59,13 @@ export default function Messages() {
     } catch { /* silently */ }
   }
 
-  const sendReply = async (msg: ContactMsg) => {
-    if (!replyText.trim()) return
-    setReplying(true)
-    setReplyErr('')
-    try {
-      await api.post(`/admin/contact/${msg.id}/reply`, { reply_text: replyText })
-      setMsgs((prev) => prev.map((m) => m.id === msg.id ? { ...m, status: 'answered' } : m))
-      setReplyOk(msg.id)
-      setReplyId(null)
-      setReplyText('')
-      setTimeout(() => setReplyOk(null), 3500)
-    } catch {
-      setReplyErr('Error al enviar la respuesta. Intenta de nuevo.')
-    } finally {
-      setReplying(false)
-    }
+  const followUpWhatsApp = (msg: ContactMsg) => {
+    if (!msg.phone) return
+    openWhatsApp(
+      msg.phone,
+      `Hola ${msg.full_name}, te contactamos de NORIA Creative Film Studio respecto a tu mensaje "${msg.subject}".`
+    )
+    void setStatus(msg.id, 'answered')
   }
 
   const handleSearch = (e: FormEvent) => {
@@ -168,69 +155,32 @@ export default function Messages() {
                 <div className={styles.body}>
                   <p className={styles.msgText}>{m.message}</p>
 
-                  {/* Feedback de respuesta enviada */}
-                  {replyOk === m.id && (
-                    <div className={styles.replySuccess}>
-                      <CheckCheck size={14} />
-                      Respuesta enviada correctamente
-                    </div>
-                  )}
-
-                  {/* Formulario de respuesta */}
-                  {replyId === m.id ? (
-                    <div className={styles.replyForm}>
-                      <p className={styles.replyLabel}>
-                        Responder a <strong>{m.email}</strong>
-                      </p>
-                      {replyErr && <p className="msg-error">{replyErr}</p>}
-                      <textarea
-                        className={`admin-input ${styles.replyTextarea}`}
-                        rows={5}
-                        placeholder="Escribe tu respuesta..."
-                        value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
-                        autoFocus
-                      />
-                      <div className={styles.replyActions}>
-                        <button
-                          className="btn-sm btn-primary"
-                          disabled={replying || !replyText.trim()}
-                          onClick={() => void sendReply(m)}
-                        >
-                          <Send size={13} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-                          {replying ? 'Enviando...' : 'Enviar respuesta'}
-                        </button>
-                        <button className="btn-sm btn-ghost" onClick={() => { setReplyId(null); setReplyText('') }}>
-                          Cancelar
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className={styles.bodyActions}>
-                      {m.status !== 'read' && m.status !== 'answered' && (
-                        <button className="btn-sm btn-ghost" onClick={() => void setStatus(m.id, 'read')}>
-                          Marcar leído
-                        </button>
-                      )}
-                      {m.status !== 'archived' && (
-                        <button className="btn-sm btn-ghost" onClick={() => void setStatus(m.id, 'archived')}>
-                          Archivar
-                        </button>
-                      )}
-                      {m.status === 'archived' && (
-                        <button className="btn-sm btn-ghost" onClick={() => void setStatus(m.id, 'read')}>
-                          Restaurar
-                        </button>
-                      )}
-                      <button
-                        className="btn-sm btn-primary"
-                        onClick={() => { setReplyId(m.id); setReplyText(''); setReplyErr('') }}
-                      >
-                        <Send size={13} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-                        Responder por email
+                  <div className={styles.bodyActions}>
+                    {m.status !== 'read' && m.status !== 'answered' && (
+                      <button className="btn-sm btn-ghost" onClick={() => void setStatus(m.id, 'read')}>
+                        Marcar leído
                       </button>
-                    </div>
-                  )}
+                    )}
+                    {m.status !== 'archived' && (
+                      <button className="btn-sm btn-ghost" onClick={() => void setStatus(m.id, 'archived')}>
+                        Archivar
+                      </button>
+                    )}
+                    {m.status === 'archived' && (
+                      <button className="btn-sm btn-ghost" onClick={() => void setStatus(m.id, 'read')}>
+                        Restaurar
+                      </button>
+                    )}
+                    <button
+                      className="btn-sm btn-primary"
+                      disabled={!m.phone}
+                      title={m.phone ? undefined : 'Sin teléfono registrado'}
+                      onClick={() => followUpWhatsApp(m)}
+                    >
+                      <MessageCircle size={13} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                      Seguimiento por WhatsApp
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

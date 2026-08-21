@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useQuotes } from '../../hooks/useQuotes'
+import { useAuth } from '../../context/AuthContext'
+import { openWhatsAppAdmin } from '../../lib/whatsapp'
 import BackHeader from '../../components/layout/BackHeader/BackHeader'
+import type { QuoteItem } from '../../types'
 import styles from './MyQuotes.module.css'
 
 const STATUS_LABEL: Record<string, string> = {
@@ -41,7 +44,21 @@ function fmtDate(iso: string) {
 
 export default function MyQuotes() {
   const { quotes, loading, error, refetch } = useQuotes()
+  const { user } = useAuth()
   const navigate = useNavigate()
+
+  const sendFollowUp = (q: QuoteItem) => {
+    openWhatsAppAdmin(
+      `Seguimiento de cotización — NORIA Films\n` +
+      `Cliente: ${user?.full_name ?? '—'} (${user?.email ?? '—'})\n` +
+      `Cotización #${q.id} · ${fmtDate(q.created_at)}\n` +
+      `Servicio: ${q.service_name}\n` +
+      `Duración: ${q.shooting_duration ? (DURATION_LABEL[q.shooting_duration] ?? q.shooting_duration) : '—'}\n` +
+      `Dron: ${q.needs_drone ? 'Sí' : 'No'}\n` +
+      `Entrega: ${q.delivery_time ? (DELIVERY_LABEL[q.delivery_time] ?? q.delivery_time) : '—'}\n` +
+      `Total estimado: ${fmtMXN(q.estimated_price)} MXN`
+    )
+  }
 
   if (loading) {
     return (
@@ -150,6 +167,12 @@ export default function MyQuotes() {
                     <span className={styles.bLabel}>Extras</span>
                     <span className={styles.bValue}>{fmtMXN(q.extras_cost)}</span>
                   </div>
+                </div>
+
+                <div className={styles.cardActions}>
+                  <button className={styles.btn} onClick={() => sendFollowUp(q)}>
+                    Seguimiento por WhatsApp
+                  </button>
                 </div>
               </div>
             ))}

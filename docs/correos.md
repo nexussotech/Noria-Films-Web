@@ -1,10 +1,10 @@
-# Sistema de Correos — NORIA Creative Film Studio
+# Sistema de Correos y WhatsApp — NORIA Creative Film Studio
 
-Documentación del sistema de emails: cuándo se envían, qué información contienen y cómo opera el modo simulado.
+El correo se usa hoy únicamente para el mensaje de bienvenida al registrarse. El contacto y las cotizaciones se manejan por WhatsApp (ver sección abajo).
 
 ---
 
-## Configuración
+## Correo — Configuración
 
 El sistema usa **Nodemailer** con Gmail SMTP. Si las variables `MAIL_HOST`, `MAIL_USER` y `MAIL_PASS` están configuradas en `server/.env`, los correos se envían realmente. Si faltan, el servidor entra en **modo simulado**: imprime el destino y asunto en consola sin crashear.
 
@@ -13,16 +13,11 @@ MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USER=nexus.sotech@gmail.com
 MAIL_PASS=xxxx xxxx xxxx xxxx   # App Password de Gmail (requiere 2FA)
-CLIENT_EMAIL_TO=correo_del_admin@gmail.com
 ```
 
 Remitente siempre: `"NORIA Creative Film Studio" <MAIL_USER>`
 
----
-
-## Tipos de correo
-
-### 1. Bienvenida al registrar cuenta
+### Bienvenida al registrar cuenta
 
 | Campo | Valor |
 |-------|-------|
@@ -34,79 +29,7 @@ Remitente siempre: `"NORIA Creative Film Studio" <MAIL_USER>`
 
 **Contenido:** Saludo personalizado, confirmación de que la cuenta fue creada, instrucciones para iniciar sesión.
 
----
-
-### 2. Confirmación de cotización — al usuario
-
-| Campo | Valor |
-|-------|-------|
-| Destinatario | Usuario que generó la cotización |
-| Trigger | `POST /api/quotes` exitoso |
-| Template | `t.quoteCreated(name, service, breakdown)` |
-| Variables | `name`, `service` (nombre del servicio), `breakdown` (objeto con `base_price`, `production_cost`, `equipment_cost`, `postproduction_cost`, `estimated_price`) |
-| Asunto | `Cotización generada — {service}` |
-
-**Contenido:** Tabla con desglose completo de costos (base, duración de rodaje, equipo adicional, tiempo de entrega, total). Aviso de que el precio es aproximado.
-
----
-
-### 3. Notificación de cotización — al administrador
-
-| Campo | Valor |
-|-------|-------|
-| Destinatario | `CLIENT_EMAIL_TO` (email del estudio) |
-| Trigger | `POST /api/quotes` exitoso, si `CLIENT_EMAIL_TO` está configurado |
-| Template | `t.quoteNotifyAdmin(name, service, email)` |
-| Variables | `name`, `service`, `email` (correo del usuario) |
-| Asunto | `Nueva cotización registrada — {service}` |
-
-**Contenido:** Nombre del usuario, correo de contacto y servicio solicitado. Enlace implícito al panel de admin para revisar el detalle.
-
----
-
-### 4. Acuse de contacto — al remitente
-
-| Campo | Valor |
-|-------|-------|
-| Destinatario | Persona que llenó el formulario de contacto |
-| Trigger | `POST /api/contact` exitoso |
-| Template | `t.contactAck(name)` |
-| Variables | `name` — nombre del remitente |
-| Asunto | `Mensaje recibido — NORIA Creative Film Studio` |
-
-**Contenido:** Confirmación de que el mensaje fue recibido. Tiempo de respuesta estimado: 24 a 48 horas hábiles.
-
----
-
-### 5. Respuesta del admin a mensaje de contacto
-
-| Campo | Valor |
-|-------|-------|
-| Destinatario | Persona que envió el mensaje original |
-| Trigger | `POST /api/admin/contact/:id/reply` desde el panel admin |
-| Template | `t.contactReply(name, originalSubject, replyText)` |
-| Variables | Nombre del remitente, asunto original, texto de respuesta |
-| Asunto | `RE: {originalSubject} — NORIA Creative Film Studio` |
-
-**Contenido:** Respuesta escrita por el admin en caja estilizada. El status del mensaje cambia a `answered`.
-
----
-
-### 6. Notificación de contacto — al administrador
-
-| Campo | Valor |
-|-------|-------|
-| Destinatario | `CLIENT_EMAIL_TO` |
-| Trigger | `POST /api/contact` exitoso, si `CLIENT_EMAIL_TO` está configurado |
-| Template | `t.contactNotifyAdmin(name, subject, email, phone, message)` |
-| Variables | Nombre, asunto, email, teléfono (opcional), mensaje completo |
-| Asunto | `Nuevo mensaje de contacto — {subject}` |
-
-**Contenido:** Tabla con datos del remitente y cuerpo completo del mensaje para respuesta directa.
-
----
-
-## Modo simulado
+### Modo simulado
 
 Si `MAIL_PASS` (o cualquiera de las tres variables SMTP) no está configurada, `nodemailer` no se instancia. En su lugar, la función `send()` imprime en consola:
 
@@ -114,18 +37,33 @@ Si `MAIL_PASS` (o cualquiera de las tres variables SMTP) no está configurada, `
 [EMAIL SIMULADO] → destinatario@ejemplo.com | Asunto del correo
 ```
 
-El servidor no crashea y el flujo de negocio continúa normalmente. Útil para desarrollo local sin credenciales SMTP.
+Implementado en `server/src/services/email.service.js` mediante `layout()`, `heading()`, `subtext()` y `notice()`.
 
 ---
 
-## Diseño de los templates
+## WhatsApp — Contacto y cotizaciones
 
-Todos los correos comparten la misma arquitectura visual:
+Reemplaza al correo transaccional que existía antes para estos dos flujos. No usa ninguna API ni cuenta externa: son links `https://wa.me/<numero>?text=<mensaje>` que abren WhatsApp con el mensaje ya redactado. Helper compartido: `openWhatsApp()` / `openWhatsAppAdmin()` en `client/src/lib/whatsapp.ts` y `admin/src/lib/whatsapp.ts`.
 
-- Fondo oscuro `#0f1117`, superficie `#1a1d27`
-- Cabecera roja `#A73436` con nombre del estudio
-- Tablas de datos con etiqueta en gris y valor en crema `#F3F3F1`
-- Avisos con borde izquierdo rojo para notas importantes
-- Pie con aviso de correo automático
+Número del negocio: variable `VITE_WHATSAPP_NUMBER` en `client/.env` / `client/.env.production`.
 
-Implementados en `server/src/services/email.service.js` mediante las funciones auxiliares `layout()`, `dataTable()`, `heading()`, `subtext()` y `notice()`.
+### Flujo cliente → admin
+
+| Origen | Trigger | Qué pasa |
+|--------|---------|----------|
+| Formulario de contacto (`Contact.tsx`) | Envío exitoso de `POST /api/contact` | Se abre WhatsApp del usuario con los datos del mensaje, dirigido al número del negocio |
+| Cotización nueva (`Quote.tsx`) | Botón "Enviar por WhatsApp" en la pantalla de éxito, tras `POST /api/quotes` | Se abre WhatsApp con el desglose de la cotización |
+| Cotización guardada (`MyQuotes.tsx`) | Botón "Seguimiento por WhatsApp" en cada tarjeta | Igual que arriba, para retomar una cotización anterior |
+
+El teléfono es obligatorio tanto en el registro de usuario como en el formulario de contacto, para que el dato quede siempre disponible.
+
+### Flujo admin → cliente (respaldo manual)
+
+Como el envío real ocurre en el WhatsApp del usuario (fuera del control del backend), no hay forma de confirmar que se completó. El panel admin conserva un botón equivalente como respaldo, basado en los datos ya guardados en base de datos:
+
+| Panel | Botón | Comportamiento |
+|-------|-------|-----------------|
+| Mensajes (`Messages.tsx`) | "Seguimiento por WhatsApp" | Abre chat con el teléfono del mensaje y marca el mensaje como `answered` (`PATCH /api/contact/:id/status`) |
+| Cotizaciones (`Quotes.tsx`) | "WhatsApp" | Abre chat con el teléfono del usuario dueño de la cotización |
+
+Si el registro no tiene teléfono (mensajes/usuarios previos a este cambio), el botón aparece deshabilitado.

@@ -50,7 +50,8 @@ exports.setStatus = async (req, res) => {
     const { id } = req.params
     const { status } = req.body
     if (!['active','inactive'].includes(status)) return R.badRequest(res, 'Estado inválido')
-    await db.query('UPDATE users SET status=? WHERE id=? AND role="user"', [status, id])
+    const [result] = await db.query('UPDATE users SET status=? WHERE id=? AND role="user"', [status, id])
+    if (!result.affectedRows) return R.notFound(res, 'Usuario no encontrado')
     return R.ok(res, { message: `Usuario ${status === 'active' ? 'activado' : 'desactivado'}` })
   } catch (err) { return R.serverError(res, err) }
 }

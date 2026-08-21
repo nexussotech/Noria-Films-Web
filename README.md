@@ -6,6 +6,21 @@ Plataforma web para una empresa de producción audiovisual. Permite a visitantes
 
 ---
 
+## Cambios recientes — Contacto y cotizaciones por WhatsApp
+
+El formulario de contacto y el flujo de cotización dejaron de usar correo transaccional (confirmación al usuario, notificación al admin, respuesta desde el panel) y ahora usan **WhatsApp** vía links `wa.me` — sin API ni servicio externo, sin costo:
+
+- **Cliente → admin**: al enviar el formulario de contacto o generar/dar seguimiento a una cotización, se abre WhatsApp del usuario con el mensaje ya redactado hacia el número del negocio (`VITE_WHATSAPP_NUMBER`).
+- **Admin → cliente**: en los paneles de Mensajes y Cotizaciones hay un botón "Seguimiento por WhatsApp" que abre el chat con el teléfono del cliente (respaldo manual, ya que no hay forma de confirmar que el cliente completó su propio envío).
+- El teléfono es **obligatorio y único por cuenta** (registro y formulario de contacto) — antes era opcional y se podía repetir entre usuarios.
+- El correo (Nodemailer + Gmail SMTP) se conserva solo para el mensaje de bienvenida al registrarse.
+- Se corrigieron bugs de esta migración: rate limiter que bloqueaba al admin en su propio panel (estaba pensado solo para el POST público de contacto), formato de número al armar el link `wa.me` (dígitos limpios + prefijo `52` si falta código de país), y estado `answered` faltante en el schema.
+- Se aprovechó para reconciliar deriva de esquema acumulada de sesiones anteriores: se aplicaron migraciones pendientes (agendamiento de citas nunca eliminado de la BD, columnas huérfanas en `quotes`) — ver `database/README.md`.
+
+Detalle completo del sistema de WhatsApp en [`docs/correos.md`](docs/correos.md).
+
+---
+
 ## Tecnologías usadas
 
 ### Frontend (client & admin)
@@ -109,18 +124,25 @@ JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:5173
 ADMIN_URL=http://localhost:5174
 
-# Email (Gmail SMTP)
+# Email (Gmail SMTP) — solo para el correo de bienvenida al registrarse
 # Dejar vacío para modo simulado (logs en consola)
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USER=tu@gmail.com
 MAIL_PASS=xxxx_xxxx_xxxx_xxxx   # App Password de Gmail
-CLIENT_EMAIL_TO=correo_del_admin@gmail.com
 ```
 
 > **Modo simulado**: Si `MAIL_PASS` está vacío, el servidor no crashea — imprime `[EMAIL SIMULADO]` en consola y sigue funcionando.
 
 > **Gmail App Password**: Requiere 2FA activo en la cuenta. Generar en: `myaccount.google.com/apppasswords`
+
+El contacto y las cotizaciones ya no usan correo: se envían por WhatsApp mediante links `wa.me` (sin API ni costo). Configurar en `client/.env` / `client/.env.production`:
+
+```env
+VITE_WHATSAPP_NUMBER=524495469811
+```
+
+Ver detalle completo en [`docs/correos.md`](docs/correos.md).
 
 ---
 
@@ -207,7 +229,7 @@ Ver documentación completa en [`docs/endpoints.md`](docs/endpoints.md)
 **Antes de producción:**
 1. Cambiar `JWT_SECRET` por un valor seguro aleatorio
 2. Actualizar `CLIENT_URL` y `ADMIN_URL` con dominios reales
-3. Configurar `MAIL_*` con credenciales reales
+3. Configurar `MAIL_*` con credenciales reales (correo de bienvenida) y `VITE_WHATSAPP_NUMBER` (contacto/cotizaciones)
 4. Eliminar usuario `usuario@test.com` del seed o cambiar su contraseña
 
 ---
@@ -249,13 +271,14 @@ noria-films/
 │       ├── components/
 │       ├── context/       # AuthContext (Context API)
 │       ├── hooks/         # useReveal, useApi, useQuotes
-│       ├── lib/           # instancia axios
+│       ├── lib/           # instancia axios, helper de WhatsApp
 │       ├── pages/
 │       └── types/
 ├── admin/           # React + TS — panel admin (puerto 5174)
 │   └── src/
 │       ├── components/
 │       ├── context/       # AuthContext admin
+│       ├── lib/           # instancia axios, helper de WhatsApp
 │       ├── pages/
 │       └── types/
 ├── server/          # Node.js + Express (puerto 4000)
@@ -264,11 +287,11 @@ noria-films/
 │       ├── controllers/
 │       ├── middlewares/   # authenticateToken, authorizeRoles, validate
 │       ├── routes/
-│       ├── services/      # email.service
+│       ├── services/      # email.service (solo bienvenida)
 │       └── utils/
 ├── database/
-│   ├── schema.sql         # Definición de tablas
-│   ├── seed.sql           # Datos iniciales
-│   └── migration_v2.sql   # Cambios incrementales
+│   ├── schema.sql            # Definición de tablas
+│   ├── seed.sql               # Datos iniciales
+│   └── migration_v2.sql...v8.sql  # Cambios incrementales (ver database/README.md)
 └── docs/            # Documentación académica
 ```

@@ -78,34 +78,3 @@
 }
 
 .cardAnswered { border-left: 3px solid rgba(90,158,111,.5); }
-
-.replyForm { margin-top: .5rem; }
-.replyLabel {
-  font-size: .78rem;
-  color: var(--gray);
-  margin-bottom: .6rem;
-}
-.replyLabel strong { color: var(--cream); }
-.replyTextarea {
-  width: 100%;
-  box-sizing: border-box;
-  resize: vertical;
-  min-height: 100px;
-  font-size: .85rem;
-  line-height: 1.6;
-  margin-bottom: .7rem;
-}
-.replyActions { display: flex; gap: .6rem; }
-
-.replySuccess {
-  display: flex;
-  align-items: center;
-  gap: .45rem;
-  background: rgba(90,158,111,.12);
-  border: 1px solid rgba(90,158,111,.3);
-  color: #5dc98a;
-  font-size: .82rem;
-  padding: .6rem .9rem;
-  border-radius: 2px;
-  margin-bottom: .7rem;
-}

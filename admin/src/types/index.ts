@@ -37,6 +37,7 @@ export interface QuoteRow {
   service_name?: string
   full_name?: string
   email?: string
+  phone?: string | null
   user_id?: number
   project_type: string | null
   shooting_duration: string | null

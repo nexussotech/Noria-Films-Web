@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/api'
+import { openWhatsApp } from '../../lib/whatsapp'
 import type { QuoteRow } from '../../types'
 import styles from './Quotes.module.css'
 
@@ -55,6 +56,14 @@ export default function Quotes() {
       await api.patch(`/quotes/${id}/status`, { status })
       setQuotes((prev) => prev.map((q) => q.id === id ? { ...q, status: status as QuoteRow['status'] } : q))
     } catch { /* silently update */ }
+  }
+
+  const followUpWhatsApp = (q: QuoteRow) => {
+    if (!q.phone) return
+    openWhatsApp(
+      q.phone,
+      `Hola ${q.full_name ?? ''}, te contacto de NORIA Creative Film Studio sobre tu cotización de ${q.service_name ?? 'nuestros servicios'} (#${q.id}).`
+    )
   }
 
   return (
@@ -120,9 +129,17 @@ export default function Quotes() {
                       </span>
                     </td>
                     <td className={styles.dateCell}>{fmtDate(q.created_at)}</td>
-                    <td onClick={(e) => e.stopPropagation()}>
+                    <td className={styles.rowActions} onClick={(e) => e.stopPropagation()}>
                       <button className="btn-sm btn-ghost" onClick={() => navigate(`/usuarios/${q.user_id}`)}>
                         Usuario
+                      </button>
+                      <button
+                        className="btn-sm btn-ghost"
+                        disabled={!q.phone}
+                        title={q.phone ? undefined : 'Cliente sin teléfono registrado'}
+                        onClick={() => followUpWhatsApp(q)}
+                      >
+                        WhatsApp
                       </button>
                     </td>
                   </tr>

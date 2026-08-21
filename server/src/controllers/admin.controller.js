@@ -1,24 +1,5 @@
-const db          = require('../config/db')
-const R           = require('../utils/response')
-const { send, t } = require('../services/email.service')
-
-// ── Contact reply ──────────────────────────────────────────
-
-// POST /api/admin/contact/:id/reply
-exports.replyToContact = async (req, res) => {
-  try {
-    const { reply_text } = req.body
-    if (!reply_text || !reply_text.trim()) return R.badRequest(res, 'El texto de la respuesta es requerido')
-
-    const [[msg]] = await db.query('SELECT * FROM contact_messages WHERE id=?', [req.params.id])
-    if (!msg) return R.notFound(res, 'Mensaje no encontrado')
-
-    send({ to: msg.email, ...t.contactReply(msg.full_name, msg.subject, reply_text.trim()) }).catch((e) => console.error('[MAIL contact-reply]', e.message))
-    await db.query('UPDATE contact_messages SET status="answered" WHERE id=?', [req.params.id])
-
-    return R.ok(res, { message: 'Respuesta enviada correctamente' })
-  } catch (err) { return R.serverError(res, err) }
-}
+const db = require('../config/db')
+const R  = require('../utils/response')
 
 // ── Dashboard stats ────────────────────────────────────────
 

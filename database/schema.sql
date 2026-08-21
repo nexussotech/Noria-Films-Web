@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS users (
   created_at    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT pk_users       PRIMARY KEY (id),
-  CONSTRAINT uq_users_email UNIQUE (email)
+  CONSTRAINT uq_users_email UNIQUE (email),
+  CONSTRAINT uq_users_phone UNIQUE (phone)
 ) ENGINE=InnoDB;
 
 -- ────────────────────────────────────────────────────────────
@@ -76,7 +77,7 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   phone      VARCHAR(30)  DEFAULT NULL,
   subject    VARCHAR(200) NOT NULL,
   message    TEXT         NOT NULL,
-  status     ENUM('new','read','archived') NOT NULL DEFAULT 'new',
+  status     ENUM('new','read','archived','answered') NOT NULL DEFAULT 'new',
   created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT pk_contacts PRIMARY KEY (id)
 ) ENGINE=InnoDB;

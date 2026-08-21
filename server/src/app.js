@@ -4,7 +4,6 @@ const helmet       = require('helmet')
 const morgan       = require('morgan')
 const cors         = require('cors')
 const cookieParser = require('cookie-parser')
-const rateLimit    = require('express-rate-limit')
 const env          = require('./config/env')
 
 const app = express()
@@ -36,28 +35,16 @@ if (env.NODE_ENV !== 'test') {
   app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'))
 }
 
-// ── Rate limiting ─────────────────────────────────────────
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { message: 'Demasiados intentos. Espera 15 minutos e intenta de nuevo.' },
-})
-const contactLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 10,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { message: 'Demasiados mensajes enviados. Intenta más tarde.' },
-})
-
 // ── Rutas API ─────────────────────────────────────────────
-app.use('/api/auth',         authLimiter, require('./routes/auth.routes'))
+// Los rate limiters de login/registro y contacto se aplican dentro de cada
+// router, solo a las rutas públicas correspondientes (ver auth.routes.js y
+// contact.routes.js) — no al router completo, para no bloquear también las
+// rutas autenticadas (/auth/me, listado/estado de mensajes en el panel admin).
+app.use('/api/auth',         require('./routes/auth.routes'))
 app.use('/api/users',        require('./routes/users.routes'))
 app.use('/api/services',     require('./routes/services.routes'))
 app.use('/api/quotes',       require('./routes/quotes.routes'))
-app.use('/api/contact',      contactLimiter, require('./routes/contact.routes'))
+app.use('/api/contact',      require('./routes/contact.routes'))
 app.use('/api/admin',        require('./routes/admin.routes'))
 
 // ── Health ────────────────────────────────────────────────

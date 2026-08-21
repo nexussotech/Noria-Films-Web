@@ -66,17 +66,6 @@ function layout(title, body) {
 </html>`
 }
 
-// ── Tabla de datos ────────────────────────────────────────────
-
-function dataTable(rows) {
-  const cells = rows.map(([label, value]) => `
-    <tr>
-      <td style="padding:10px 16px;color:#8b8fa8;font-size:12px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;width:40%;border-bottom:1px solid #2a2d3a">${esc(label)}</td>
-      <td style="padding:10px 16px;color:#F3F3F1;font-size:14px;border-bottom:1px solid #2a2d3a">${esc(value)}</td>
-    </tr>`).join('')
-  return `<table style="width:100%;border-collapse:collapse;background:#111420;border:1px solid #2a2d3a;border-radius:3px;margin:20px 0">${cells}</table>`
-}
-
 function heading(text) {
   return `<h2 style="margin:0 0 8px;color:#F3F3F1;font-size:18px;font-weight:700">${esc(text)}</h2>`
 }
@@ -102,80 +91,6 @@ const t = {
         Ya puedes iniciar sesión para explorar nuestros servicios de producción audiovisual y generar cotizaciones.
       </p>
       ${notice('Si no solicitaste esta cuenta, puedes ignorar este correo de forma segura.')}
-    `),
-  }),
-
-  quoteCreated: (name, service, breakdown) => ({
-    subject: `Cotización — ${service}`,
-    html: layout('Cotización generada', `
-      ${heading('Cotización generada')}
-      ${subtext(`Estimado/a ${name}, hemos registrado tu solicitud de cotización para el siguiente servicio.`)}
-      ${dataTable([
-        ['Servicio', service],
-        ['Precio base', breakdown ? `$${Number(breakdown.base_price).toLocaleString('es-MX')} MXN` : '—'],
-        ['Duración del rodaje', breakdown ? `$${Number(breakdown.production_cost).toLocaleString('es-MX')} MXN` : '—'],
-        ['Equipo adicional', breakdown ? `$${Number(breakdown.equipment_cost).toLocaleString('es-MX')} MXN` : '—'],
-        ['Tiempo de entrega', breakdown ? `$${Number(breakdown.postproduction_cost).toLocaleString('es-MX')} MXN` : '—'],
-        ['Total estimado', breakdown ? `$${Number(breakdown.estimated_price).toLocaleString('es-MX')} MXN` : '—'],
-      ])}
-      ${notice('Esta cotización es aproximada y puede variar según la logística y necesidades específicas del proyecto. Nuestro equipo se pondrá en contacto para afinar los detalles.')}
-    `),
-  }),
-
-  quoteNotifyAdmin: (name, service, email) => ({
-    subject: `Nueva cotización — ${service}`,
-    html: layout('Nueva cotización', `
-      ${heading('Nueva cotización registrada')}
-      ${subtext('Se ha generado una nueva cotización en el sistema.')}
-      ${dataTable([
-        ['Usuario', name],
-        ['Correo', email || '—'],
-        ['Servicio', service],
-      ])}
-      <p style="color:#8b8fa8;font-size:13px;margin:16px 0 0">Accede al panel de administración para revisar el detalle completo.</p>
-    `),
-  }),
-
-  contactAck: (name) => ({
-    subject: 'Mensaje recibido — NORIA Creative Film Studio',
-    html: layout('Mensaje recibido', `
-      ${heading('Hemos recibido su mensaje')}
-      ${subtext(`Estimado/a ${name}, gracias por comunicarse con nosotros.`)}
-      <p style="color:#F3F3F1;font-size:14px;line-height:1.7;margin:0 0 16px">
-        Su mensaje ha sido registrado correctamente. Un miembro de nuestro equipo revisará su consulta y se pondrá en contacto con usted a la brevedad.
-      </p>
-      ${notice('Tiempo de respuesta habitual: 24 a 48 horas hábiles.')}
-    `),
-  }),
-
-  contactReply: (name, originalSubject, replyText) => ({
-    subject: `RE: ${esc(originalSubject)} — NORIA Creative Film Studio`,
-    html: layout('Respuesta a su consulta', `
-      ${heading('Respuesta a su consulta')}
-      ${subtext(`Estimado/a ${esc(name)}, nuestro equipo le responde a su mensaje.`)}
-      <div style="margin:16px 0;padding:16px;background:#111420;border:1px solid #2a2d3a;border-radius:3px">
-        <p style="margin:0 0 8px;color:#8b8fa8;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Respuesta de NORIA Creative Film Studio</p>
-        <p style="margin:0;color:#F3F3F1;font-size:14px;line-height:1.75;white-space:pre-wrap">${esc(replyText)}</p>
-      </div>
-      ${notice('Si tiene más preguntas, no dude en contactarnos nuevamente a través de nuestro formulario de contacto.')}
-    `),
-  }),
-
-  contactNotifyAdmin: (name, subject, email, phone, message) => ({
-    subject: `Nuevo mensaje de contacto — ${esc(subject)}`,
-    html: layout('Nuevo mensaje', `
-      ${heading('Nuevo mensaje de contacto')}
-      ${subtext('Se ha recibido un nuevo mensaje a través del formulario de contacto.')}
-      ${dataTable([
-        ['Nombre', name],
-        ['Correo', email],
-        ['Teléfono', phone || '—'],
-        ['Asunto', subject],
-      ])}
-      <div style="margin:16px 0;padding:16px;background:#111420;border:1px solid #2a2d3a;border-radius:3px">
-        <p style="margin:0 0 8px;color:#8b8fa8;font-size:11px;text-transform:uppercase;letter-spacing:.05em">Mensaje</p>
-        <p style="margin:0;color:#F3F3F1;font-size:14px;line-height:1.7;white-space:pre-wrap">${esc(message)}</p>
-      </div>
     `),
   }),
 
