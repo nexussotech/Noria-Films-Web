@@ -1,0 +1,1 @@
+const e="524495469811";function p(n){const t=n.replace(/\D/g,"");return t.length===10?`52${t}`:t}function a(n,t){const o=`https://wa.me/${p(n)}?text=${encodeURIComponent(t)}`;window.open(o,"_blank","noopener")}function c(n){a(e,n)}export{c as o};

@@ -1,0 +1,1 @@
+const o="_page_1iwko_1",t="_card_1iwko_9",_="_logo_1iwko_17",r="_title_1iwko_18",s="_subtitle_1iwko_19",e="_form_1iwko_21",i="_group_1iwko_22",c="_btn_1iwko_38",n="_error_1iwko_52",k="_footer_1iwko_61",l={page:o,card:t,logo:_,title:r,subtitle:s,form:e,group:i,btn:c,error:n,footer:k};export{l as s};
