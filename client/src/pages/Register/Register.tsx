@@ -21,6 +21,7 @@ export default function Register() {
   const validate = () => {
     if (!form.full_name.trim()) return 'El nombre es requerido'
     if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) return 'Ingresa un correo válido'
+    if (!form.phone.trim()) return 'El teléfono es requerido'
     if (form.password.length < 8) return 'La contraseña debe tener al menos 8 caracteres'
     if (form.password !== form.confirm) return 'Las contraseñas no coinciden'
     return null
@@ -38,12 +39,13 @@ export default function Register() {
         full_name: form.full_name,
         email:     form.email,
         password:  form.password,
-        phone:     form.phone || undefined,
+        phone:     form.phone,
       })
       navigate('/mis-cotizaciones', { replace: true })
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string } } })
-        ?.response?.data?.message ?? 'No se pudo crear la cuenta. Intenta de nuevo.'
+      const data = (err as { response?: { data?: { message?: string; errors?: { msg: string }[] } } })
+        ?.response?.data
+      const msg = data?.errors?.[0]?.msg ?? data?.message ?? 'No se pudo crear la cuenta. Intenta de nuevo.'
       setError(msg)
     } finally {
       setLoading(false)
@@ -74,7 +76,7 @@ export default function Register() {
                 name={f.name}
                 type={f.type}
                 placeholder={f.placeholder}
-                required={f.name !== 'phone'}
+                required
                 value={form[f.name]}
                 onChange={change}
                 autoComplete={f.name === 'full_name' ? 'name' : f.name}
