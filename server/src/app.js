@@ -8,6 +8,11 @@ const env          = require('./config/env')
 
 const app = express()
 
+// Render (y la mayoría de PaaS) ponen el servidor detrás de un proxy que
+// agrega X-Forwarded-For. Sin esto, express-rate-limit no puede identificar
+// la IP real del cliente y lanza ERR_ERL_UNEXPECTED_X_FORWARDED_FOR.
+app.set('trust proxy', 1)
+
 // ── Seguridad ──────────────────────────────────────────────
 app.use(helmet())
 
