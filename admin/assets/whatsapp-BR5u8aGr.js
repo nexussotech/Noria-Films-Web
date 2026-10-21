@@ -1,0 +1,1 @@
+function e(t){const n=t.replace(/\D/g,"");return n.length===10?`52${n}`:n}function p(t,n){const o=`https://wa.me/${e(t)}?text=${encodeURIComponent(n)}`;window.open(o,"_blank","noopener")}export{p as o};
