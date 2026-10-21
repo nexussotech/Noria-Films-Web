@@ -12,7 +12,11 @@ const app = express()
 app.use(helmet())
 
 // ── CORS — solo orígenes autorizados ──────────────────────
+// CLIENT_URL/ADMIN_URL admiten varios orígenes separados por coma
+// (p. ej. "https://noriafilms.com,http://localhost:5173").
 const allowed = [env.CLIENT_URL, env.ADMIN_URL]
+  .flatMap((v) => v.split(',').map((s) => s.trim()))
+  .filter(Boolean)
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || allowed.includes(origin)) return cb(null, true)
