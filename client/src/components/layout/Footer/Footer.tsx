@@ -40,8 +40,8 @@ export default function Footer() {
           <div className={styles.col}>
             <h4>Contacto</h4>
             <ul>
-              <li><a href="mailto:contacto@noriafilms.com">contacto@noriafilms.com</a></li>
-              <li><a href="tel:+524490000000">+52 (449) 000-0000</a></li>
+              <li><a href="mailto:filmsnoria@gmail.com">filmsnoria@gmail.com</a></li>
+              <li><a href="tel:+524493570887">+52 449 357 0887</a></li>
               <li>Aguascalientes, México</li>
             </ul>
           </div>

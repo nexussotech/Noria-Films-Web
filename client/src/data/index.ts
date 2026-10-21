@@ -60,11 +60,8 @@ export const PILLARS: Pillar[] = [
 ]
 
 export const SOCIALS: Social[] = [
-  { icon: 'f', label: 'Facebook', href: '#' },
   { icon: 'IG', label: 'Instagram', href: 'https://www.instagram.com/noriafilms?igsh=MWd0a295djRydWc3bg%3D%3D' },
-  { icon: '▶', label: 'YouTube', href: '#' },
-  { icon: 'in', label: 'LinkedIn', href: '#' },
-  { icon: '@', label: 'Email', href: 'mailto:contacto@noriafilms.com' },
+  { icon: '@', label: 'Email', href: 'mailto:filmsnoria@gmail.com' },
 ]
 
 export const BUDGET_RANGES = [

@@ -72,8 +72,8 @@ export default function Contact() {
             <h3>Información de Contacto</h3>
             <div className={styles.infoList}>
               {[
-                { icon: '@', label: 'Email', content: <a href="mailto:contacto@noriafilms.com">contacto@noriafilms.com</a> },
-                { icon: 'Tel', label: 'Teléfono', content: <a href="tel:+524490000000">+52 (449) 000-0000</a> },
+                { icon: '@', label: 'Email', content: <a href="mailto:filmsnoria@gmail.com">filmsnoria@gmail.com</a> },
+                { icon: 'Tel', label: 'Teléfono', content: <a href="tel:+524493570887">+52 449 357 0887</a> },
                 { icon: 'Ags', label: 'Ubicación', content: <p>Aguascalientes, México</p> },
               ].map((item) => (
                 <div key={item.label} className={styles.infoItem}>

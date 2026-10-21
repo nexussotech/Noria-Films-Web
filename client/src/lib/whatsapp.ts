@@ -1,4 +1,4 @@
-const ADMIN_WHATSAPP = import.meta.env.VITE_WHATSAPP_NUMBER ?? '524495469811'
+const ADMIN_WHATSAPP = import.meta.env.VITE_WHATSAPP_NUMBER ?? '524493570887'
 
 // wa.me requiere formato internacional completo. Si capturan un número local
 // de 10 dígitos (uso común en México, sin código de país), se antepone 52.
